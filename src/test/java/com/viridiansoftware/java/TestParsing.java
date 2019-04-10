@@ -14,4 +14,13 @@ public class TestParsing {
 		Assert.assertEquals(ClassFile.Type.Class, classFile.getType());
 		Assert.assertEquals(2, classFile.getMethodCount("toString"));
 	}
+
+	@Test
+	public void testParsingStringClass() throws IOException {
+		final ClassFile classFile = new ClassFile(getClass().getResourceAsStream("/String.class"));
+		Assert.assertEquals("String.java", classFile.getSourceFile());
+		Assert.assertEquals(ClassFile.Type.Class, classFile.getType());
+		Assert.assertEquals(1, classFile.getMethodCount("toString"));
+		Assert.assertTrue(classFile.getMethod("intern").get(0).getMethodAccessFlags().contains(MethodAccessFlag.NATIVE));
+	}
 }

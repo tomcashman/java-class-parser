@@ -17,6 +17,8 @@ package com.viridiansoftware.java;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Described a Field of a class.
@@ -25,6 +27,7 @@ import java.io.IOException;
  */
 public class FieldInfo {
     private final int        accessFlags;
+    private final List<FieldAccessFlag> fieldAccessFlags = new ArrayList<FieldAccessFlag>(2);
     private final String     name;
     private final String     description;
     private final Attributes attributes;
@@ -39,6 +42,13 @@ public class FieldInfo {
      */
     FieldInfo(DataInputStream input, ConstantPool constantPool) throws IOException {
         this.accessFlags = input.readUnsignedShort();
+
+        for(FieldAccessFlag fieldAccessFlag : FieldAccessFlag.values()) {
+            if((fieldAccessFlag.getMask() & accessFlags) == fieldAccessFlag.getMask()) {
+                fieldAccessFlags.add(fieldAccessFlag);
+            }
+        }
+
         this.name = (String)constantPool.get( input.readUnsignedShort() );
         this.description = (String)constantPool.get( input.readUnsignedShort() );
         this.attributes = new Attributes( input, constantPool );
@@ -53,6 +63,10 @@ public class FieldInfo {
      */
     public int getAccessFlags() {
         return accessFlags;
+    }
+
+    public List<FieldAccessFlag> getFieldAccessFlags() {
+        return fieldAccessFlags;
     }
 
     /**

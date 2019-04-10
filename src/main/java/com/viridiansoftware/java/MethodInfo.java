@@ -17,12 +17,15 @@ package com.viridiansoftware.java;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class MethodInfo implements Member {
 
     private final int          accessFlags;
+    private final List<MethodAccessFlag> methodAccessFlags = new ArrayList<MethodAccessFlag>(4);
     private final String       name;
     private final String       description;
     private final Attributes   attributes;
@@ -47,6 +50,13 @@ public class MethodInfo implements Member {
      */
     MethodInfo( DataInputStream input, ConstantPool constantPool, ClassFile classFile ) throws IOException {
         this.accessFlags = input.readUnsignedShort();
+
+        for(MethodAccessFlag methodAccessFlag : MethodAccessFlag.values()) {
+            if((methodAccessFlag.getMask() & accessFlags) == methodAccessFlag.getMask()) {
+                methodAccessFlags.add(methodAccessFlag);
+            }
+        }
+
         this.name = (String)constantPool.get( input.readUnsignedShort() );
         this.description = (String)constantPool.get( input.readUnsignedShort() );
         this.constantPool = constantPool;
@@ -71,6 +81,14 @@ public class MethodInfo implements Member {
      */
     public int getAccessFlags() {
         return accessFlags;
+    }
+
+    /**
+     * Returns the access flags as a list of enums
+     * @return
+     */
+    public List<MethodAccessFlag> getMethodAccessFlags() {
+        return methodAccessFlags;
     }
 
     /**

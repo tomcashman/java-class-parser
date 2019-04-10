@@ -32,7 +32,7 @@ public class ClassFile {
     private final int             majorVersion;
     private final ConstantPool    constantPool;
     private final int             accessFlags;
-    private final List<AccessFlagDef> accesFlagDefs = new ArrayList<AccessFlagDef>(2);
+    private final List<ClassAccessFlag> classAccessFlags = new ArrayList<ClassAccessFlag>(2);
     private final ConstantClass   thisClass;
     private final ConstantClass   superClass;
     private final ConstantClass[] interfaces;
@@ -62,9 +62,9 @@ public class ClassFile {
         constantPool = new ConstantPool( input );
         accessFlags = input.readUnsignedShort();
 
-        for(AccessFlagDef accessFlagDef : AccessFlagDef.values()) {
-            if((accessFlagDef.getMask() & accessFlags) == accessFlagDef.getMask()) {
-                accesFlagDefs.add(accessFlagDef);
+        for(ClassAccessFlag classAccessFlag : ClassAccessFlag.values()) {
+            if((classAccessFlag.getMask() & accessFlags) == classAccessFlag.getMask()) {
+                classAccessFlags.add(classAccessFlag);
             }
         }
 
@@ -135,6 +135,16 @@ public class ClassFile {
         return methods;
     }
 
+    public List<MethodInfo> getMethod(String name) {
+        final List<MethodInfo> results = new ArrayList<MethodInfo>(2);
+        for( MethodInfo method : methods ) {
+            if( name.equals( method.getName() ) ) {
+                results.add(method);
+            }
+        }
+        return results;
+    }
+
     public int getMethodCount( String name ) {
         int count = 0;
         for( MethodInfo method : methods ) {
@@ -177,8 +187,8 @@ public class ClassFile {
      * Returns access flags as list of enums
      * @return
      */
-    public List<AccessFlagDef> getAccessFlagDefs() {
-        return accesFlagDefs;
+    public List<ClassAccessFlag> getClassAccessFlags() {
+        return classAccessFlags;
     }
 
     private FieldInfo[] readFields() throws IOException {
