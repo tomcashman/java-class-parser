@@ -23,8 +23,8 @@ public class ConstantPool {
     private final Object[] constantPool;
 
     /**
-     * http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.4
-     * http://docs.oracle.com/javase/specs/jvms/se5.0/html/ClassFile.doc.html#20080
+     * http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.4
+     * http://docs.oracle.com/javase/specs/jvms/se8/html/ClassFile.doc.html#20080
      *
      * @param input
      *            the stream of the class

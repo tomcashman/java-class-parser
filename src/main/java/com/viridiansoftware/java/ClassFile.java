@@ -22,8 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html
- * http://docs.oracle.com/javase/specs/jvms/se5.0/html/ClassFile.doc.html
+ * https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html
  */
 public class ClassFile {
 
@@ -175,8 +174,8 @@ public class ClassFile {
 
     /**
      * The access flags of the class.
-     * http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.1-200-E
-     * http://docs.oracle.com/javase/specs/jvms/se5.0/html/ClassFile.doc.html#23242
+     * http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.1-200-E
+     * http://docs.oracle.com/javase/specs/jvms/se8/html/ClassFile.doc.html#23242
      * @see java.lang.Class#isInterface()
      */
     public int getAccessFlags() {

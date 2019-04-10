@@ -28,8 +28,8 @@ public class TryCatchFinally {
     private final ConstantClass type;
 
     /**
-     * http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.7.3
-     * http://docs.oracle.com/javase/specs/jvms/se5.0/html/ClassFile.doc.html#1546
+     * http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.3
+     * http://docs.oracle.com/javase/specs/jvms/se8/html/ClassFile.doc.html#1546
      *
      * @param input
      * @param constantPool

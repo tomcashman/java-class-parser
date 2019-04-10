@@ -30,8 +30,8 @@ public class LocalVariable {
     private boolean declared;
 
     /**
-     * http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.7.13
-     * http://docs.oracle.com/javase/specs/jvms/se5.0/html/ClassFile.doc.html#5956
+     * http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.13
+     * http://docs.oracle.com/javase/specs/jvms/se8/html/ClassFile.doc.html#5956
      *
      * @param input
      *            the stream of the class

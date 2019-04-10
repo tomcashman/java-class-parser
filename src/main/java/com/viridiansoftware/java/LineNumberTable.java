@@ -24,8 +24,8 @@ public class LineNumberTable {
     private final int line_number[];
 
     /**
-     * http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.7.12
-     * http://docs.oracle.com/javase/specs/jvms/se5.0/html/ClassFile.doc.html#22856
+     * http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.12
+     * http://docs.oracle.com/javase/specs/jvms/se8/html/ClassFile.doc.html#22856
      *
      * @param input
      *            the stream of the class

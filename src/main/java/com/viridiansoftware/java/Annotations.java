@@ -23,7 +23,7 @@ import java.util.Map;
 public class Annotations {
 
     /**
-     * Read the annotations structure. http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.7.17
+     * Read the annotations structure. http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.17
      * 
      * @param input
      *            the stream of the RuntimeInvisibleAnnotations attribute

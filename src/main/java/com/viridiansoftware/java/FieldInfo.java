@@ -22,8 +22,8 @@ import java.util.List;
 
 /**
  * Described a Field of a class.
- * http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.5
- * http://docs.oracle.com/javase/specs/jvms/se5.0/html/ClassFile.doc.html#2877
+ * http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.5
+ * http://docs.oracle.com/javase/specs/jvms/se8/html/ClassFile.doc.html#2877
  */
 public class FieldInfo {
     private final int        accessFlags;
@@ -34,8 +34,8 @@ public class FieldInfo {
 
     /**
      * Read a single FieldInfo.
-     * http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.5
-     * http://docs.oracle.com/javase/specs/jvms/se5.0/html/ClassFile.doc.html#2877
+     * http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.5
+     * http://docs.oracle.com/javase/specs/jvms/se8/html/ClassFile.doc.html#2877
      * @param input
      * @param constantPool
      * @throws IOException
@@ -56,8 +56,8 @@ public class FieldInfo {
 
     /**
      * Get the access flags of the method.
-     * http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.5-200-A
-     * http://docs.oracle.com/javase/specs/jvms/se5.0/html/ClassFile.doc.html#87652
+     * http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.5-200-A
+     * http://docs.oracle.com/javase/specs/jvms/se8/html/ClassFile.doc.html#87652
      *
      * @return the flags
      */

@@ -36,8 +36,7 @@ public class MethodInfo implements Member {
     private Map<String,Map<String,Object>> annotations;
 
     /**
-     * Read the method_info structure http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.6
-     * http://docs.oracle.com/javase/specs/jvms/se5.0/html/ClassFile.doc.html#1513
+     * Read the method_info structure http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.6
      *
      * @param input
      *            the stream of the class file
@@ -74,8 +73,7 @@ public class MethodInfo implements Member {
 
     /**
      * Get the access flags of the method.
-     * http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.6-200-A
-     * http://docs.oracle.com/javase/specs/jvms/se5.0/html/ClassFile.doc.html#1522
+     * http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.6-200-A
      *
      * @return the flags
      */
@@ -93,8 +91,8 @@ public class MethodInfo implements Member {
 
     /**
      * If the method is a static method.
-     * http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.6-200-A
-     * http://docs.oracle.com/javase/specs/jvms/se5.0/html/ClassFile.doc.html#1522
+     * http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.6-200-A
+     * http://docs.oracle.com/javase/specs/jvms/se8/html/ClassFile.doc.html#1522
      * @return true, if static
      * @see #getAccessFlags()
      */
