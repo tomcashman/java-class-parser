@@ -97,7 +97,39 @@ public class MethodInfo implements Member {
      * @see #getAccessFlags()
      */
     public boolean isStatic() {
-        return (accessFlags & 0x0008) > 0;
+        return (accessFlags & MethodAccessFlag.STATIC.getMask()) > 0;
+    }
+
+    /**
+     * Returns if the method is public visibility
+     * @return True if public visibility
+     */
+    public boolean isPublic() {
+        return (accessFlags & MethodAccessFlag.PUBLIC.getMask()) > 0;
+    }
+
+    /**
+     * Returns if the method is protected visibility
+     * @return True if protected visibility
+     */
+    public boolean isProtected() {
+        return (accessFlags & MethodAccessFlag.PROTECTED.getMask()) > 0;
+    }
+
+    /**
+     * Returns if the method is private visibility
+     * @return True if private visibility
+     */
+    public boolean isPrivate() {
+        return (accessFlags & MethodAccessFlag.PRIVATE.getMask()) > 0;
+    }
+
+    /**
+     * Returns if the method is a native method
+     * @return True if the method is a native method
+     */
+    public boolean isNative() {
+        return (accessFlags & MethodAccessFlag.NATIVE.getMask()) > 0;
     }
 
     /**

@@ -17,6 +17,8 @@ package com.viridiansoftware.java;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConstantPool {
 
@@ -116,5 +118,19 @@ public class ConstantPool {
 
     public Object get( int index ) {
         return constantPool[index];
+    }
+
+    public int length() {
+        return constantPool.length;
+    }
+
+    public List<ConstantClass> getConstantClasses() {
+        final List<ConstantClass> result = new ArrayList<ConstantClass>();
+        for(int i = 0; i < constantPool.length; i++) {
+            if(constantPool[i] instanceof ConstantClass) {
+                result.add((ConstantClass) constantPool[i]);
+            }
+        }
+        return result;
     }
 }

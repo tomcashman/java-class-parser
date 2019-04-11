@@ -70,11 +70,35 @@ public class FieldInfo {
     }
 
     /**
+     * Returns if the field is public visibility
+     * @return True if public visibility
+     */
+    public boolean isPublic() {
+        return (accessFlags & FieldAccessFlag.PUBLIC.getMask()) > 0;
+    }
+
+    /**
+     * Returns if the field is protected visibility
+     * @return True if protected visibility
+     */
+    public boolean isProtected() {
+        return (accessFlags & FieldAccessFlag.PROTECTED.getMask()) > 0;
+    }
+
+    /**
+     * Returns if the field is private visibility
+     * @return True if private visibility
+     */
+    public boolean isPrivate() {
+        return (accessFlags & FieldAccessFlag.PRIVATE.getMask()) > 0;
+    }
+
+    /**
      * If this field is static or not
      * @return true, if static
      */
     public boolean isStatic() {
-        return (accessFlags & 0x0008) > 0;
+        return (accessFlags & FieldAccessFlag.STATIC.getMask()) > 0;
     }
 
     /**

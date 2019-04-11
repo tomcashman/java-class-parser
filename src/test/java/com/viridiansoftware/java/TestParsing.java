@@ -11,6 +11,7 @@ public class TestParsing {
 	public void testParsingByteClass() throws IOException {
 		final ClassFile classFile = new ClassFile(getClass().getResourceAsStream("/Byte.class"));
 		Assert.assertEquals("Byte.java", classFile.getSourceFile());
+		Assert.assertEquals("java/lang/Byte", classFile.getThisClass().getName());
 		Assert.assertEquals(ClassFile.Type.Class, classFile.getType());
 		Assert.assertEquals(2, classFile.getMethodCount("toString"));
 	}
