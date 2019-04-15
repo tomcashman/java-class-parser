@@ -58,13 +58,18 @@ public class ConstantPool {
                     break;
                 case 7: //CONSTANT_Class
                 case 8: //CONSTANT_String
+                case 16: //CONSTANT_MethodType
                     pool[i] = new int[] { type, input.readUnsignedShort() };
                     break;
                 case 9: //CONSTANT_Fieldref
                 case 10: //CONSTANT_Methodref
                 case 11: //CONSTANT_InterfaceMethodref
                 case 12: //CONSTANT_NameAndType
+                case 18: //CONSTANT_InvokeDynamic
                     pool[i] = new int[] { type, input.readUnsignedShort(), input.readUnsignedShort() };
+                    break;
+                case 15: //CONSTANT_MethodHandle
+                    pool[i] = new int[] { type, input.readByte(), input.readUnsignedShort() };
                     break;
                 default:
                     throw new IOException( "Unknown constant pool type: " + type );
@@ -107,6 +112,44 @@ public class ConstantPool {
                             break;
                         case 12: //CONSTANT_NameAndType
                             pool[i] = new ConstantNameAndType( (String)pool[data[1]], (String)pool[data[2]] );
+                            break;
+                        case 15: //CONSTANT_MethodHandle
+                            if( pool[data[2]] instanceof int[] ) {
+                                repeat = true;
+                            } else {
+                                switch(data[1]) {
+                                case 1: //REF_getField
+                                case 2: //REF_getStatic
+                                case 3: //REF_putField
+                                case 4: //REF_putStatic
+                                    if(pool[data[2]] instanceof ConstantFieldRef) {
+                                        pool[i] = new ConstantMethodHandle(data[1], (ConstantFieldRef) pool[data[2]]);
+                                    } else {
+                                        throw new IOException( "Expected " + ConstantFieldRef.class.getSimpleName() +
+                                                " in constant pool index " + data[2] + " but found " + pool[data[2]].getClass().getSimpleName());
+                                    }
+                                    break;
+                                case 5: //REF_invokeVirtual
+                                case 6: //REF_invokeStatic
+                                case 7: //REF_invokeSpecial
+                                case 8: //REF_newInvokeSpecial
+                                case 9: //REF_invokeInterface
+                                    if(pool[data[2]] instanceof ConstantMethodRef) {
+                                        pool[i] = new ConstantMethodHandle(data[1], (ConstantMethodRef) pool[data[2]]);
+                                    } else {
+                                        throw new IOException( "Expected " + ConstantFieldRef.class.getSimpleName() +
+                                                " in constant pool index " + data[2] + " but found " + pool[data[2]].getClass().getSimpleName());
+                                    }
+                                    break;
+                                default:
+                                    throw new IOException( "Unknown method handle reference kind: " + data[1] );
+                                }
+                            }
+                            break;
+                        case 16: //CONSTANT_MethodType
+                            pool[i] = new ConstantMethodType((String) pool[data[1]]);
+                            break;
+                        case 18: //CONSTANT_InvokeDynamic
                             break;
                         default:
                             throw new IOException( "Unknown constant pool type: " + data[0] );
