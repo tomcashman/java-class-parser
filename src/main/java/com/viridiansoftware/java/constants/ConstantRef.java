@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.viridiansoftware.java;
+package com.viridiansoftware.java.constants;
+
+import com.viridiansoftware.java.Member;
 
 /**
  * A reference to an member that is described in the constant pool of a Java class.
@@ -31,7 +33,7 @@ public abstract class ConstantRef implements Member {
      * @param nameAndType
      *            the name and type description
      */
-    ConstantRef( ConstantClass constClass, ConstantNameAndType nameAndType ) {
+    public ConstantRef( ConstantClass constClass, ConstantNameAndType nameAndType ) {
         this.constClass = constClass;
         this.nameAndType = nameAndType;
     }

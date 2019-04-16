@@ -13,11 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.viridiansoftware.java;
+package com.viridiansoftware.java.constants;
 
-public class ConstantInterfaceRef extends ConstantRef {
+public class ConstantNameAndType{
 
-    ConstantInterfaceRef( ConstantClass constClass, ConstantNameAndType nameAndType ) {
-        super( constClass, nameAndType );
+    private final String name;
+    private final String type;
+
+    public ConstantNameAndType(String name, String type){
+        this.name = name;
+        this.type = type;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    /**
+     * The type of the variable in class file syntax.
+     * @return the type
+     */
+    public String getType(){
+        return type;
     }
 }

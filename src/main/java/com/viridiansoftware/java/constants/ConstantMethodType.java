@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.viridiansoftware.java;
+package com.viridiansoftware.java.constants;
 
-public class ConstantMethodHandle {
-	private final int referenceKind;
-	private final ConstantRef reference;
+public class ConstantMethodType {
+	private final String descriptor;
 
-	public ConstantMethodHandle(int referenceKind, ConstantRef reference) {
-		this.referenceKind = referenceKind;
-		this.reference = reference;
+	public ConstantMethodType(String descriptor) {
+		this.descriptor = descriptor;
+	}
+
+	public String getDescriptor() {
+		return descriptor;
 	}
 }

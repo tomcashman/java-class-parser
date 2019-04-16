@@ -15,6 +15,9 @@
  ******************************************************************************/
 package com.viridiansoftware.java;
 
+import com.viridiansoftware.java.attributes.Code;
+import com.viridiansoftware.java.attributes.LineNumberTable;
+
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -38,7 +41,7 @@ public class CodeInputStream extends DataInputStream {
      * @param code
      *            the calling code to get the line numbers
      */
-    CodeInputStream( byte[] buf, int offset, int length, Code code ) {
+    public CodeInputStream( byte[] buf, int offset, int length, Code code ) {
         this( new ByteCodeArrayInputStream( buf, offset, length ) );
         this.code = code;
     }

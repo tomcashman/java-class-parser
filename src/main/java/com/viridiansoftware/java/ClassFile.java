@@ -15,6 +15,11 @@
  ******************************************************************************/
 package com.viridiansoftware.java;
 
+import com.viridiansoftware.java.attributes.AttributeInfo;
+import com.viridiansoftware.java.attributes.Attributes;
+import com.viridiansoftware.java.constants.ConstantClass;
+import com.viridiansoftware.java.constants.ConstantPool;
+
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,15 +34,15 @@ public class ClassFile {
     private final DataInputStream input;
     private final int             minorVersion;
     private final int             majorVersion;
-    private final ConstantPool    constantPool;
+    private final ConstantPool constantPool;
     private final int             accessFlags;
     private final List<ClassAccessFlag> classAccessFlags = new ArrayList<ClassAccessFlag>(2);
-    private final ConstantClass   thisClass;
+    private final ConstantClass thisClass;
     private final ConstantClass   superClass;
     private final ConstantClass[] interfaces;
     private final FieldInfo[]     fields;
     private final MethodInfo[]    methods;
-    private final Attributes      attributes;
+    private final Attributes attributes;
     private String                thisSignature;
     private String                superSignature;
 
@@ -79,7 +84,7 @@ public class ClassFile {
 
         stream.close();
 
-        Attributes.AttributeInfo info = attributes.get( "Signature" );
+        AttributeInfo info = attributes.get( "Signature" );
         if( info != null ) {
             int idx = info.getDataInputStream().readShort();
             String signature = (String)constantPool.get( idx );

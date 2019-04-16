@@ -13,11 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.viridiansoftware.java;
+package com.viridiansoftware.java.constants;
 
-public class ConstantFieldRef extends ConstantRef {
+public class ConstantClass {
+    private final String name;
 
-    ConstantFieldRef( ConstantClass constClass, ConstantNameAndType nameAndType ) {
-        super( constClass, nameAndType );
+    public ConstantClass( String name ) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 }

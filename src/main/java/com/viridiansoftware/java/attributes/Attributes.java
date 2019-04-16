@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.viridiansoftware.java;
+package com.viridiansoftware.java.attributes;
 
+import com.viridiansoftware.java.constants.ConstantPool;
 import lombok.NonNull;
 
-import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
@@ -25,9 +25,9 @@ public class Attributes {
 
     private final AttributeInfo[] attributes;
 
-    private final ConstantPool    constantPool;
+    private final ConstantPool constantPool;
 
-    Attributes(@NonNull DataInputStream input, @NonNull ConstantPool constantPool ) throws IOException {
+    public Attributes(@NonNull DataInputStream input, @NonNull ConstantPool constantPool ) throws IOException {
         this.constantPool = constantPool;
         this.attributes = readAttributs( input );
     }
@@ -40,7 +40,7 @@ public class Attributes {
         return attrs;
     }
 
-    AttributeInfo get( String name ) {
+    public AttributeInfo get(String name) {
         if(name == null) {
             return null;
         }
@@ -50,31 +50,6 @@ public class Attributes {
             }
         }
         return null;
-    }
-
-    static class AttributeInfo {
-
-        private final String name;
-
-        private final byte[] info;
-
-        AttributeInfo( @NonNull DataInputStream input, @NonNull ConstantPool constantPool ) throws IOException {
-            this.name = (String)constantPool.get( input.readUnsignedShort() );
-            this.info = new byte[input.readInt()];
-            input.readFully( this.info );
-        }
-
-        String getName() {
-            return name;
-        }
-
-        byte[] getData() {
-            return info;
-        }
-
-        DataInputStream getDataInputStream(){
-            return new DataInputStream( new ByteArrayInputStream( info ) );
-        }
     }
 
     /**

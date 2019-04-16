@@ -15,6 +15,9 @@
  ******************************************************************************/
 package com.viridiansoftware.java;
 
+import com.viridiansoftware.java.constants.ConstantClass;
+import com.viridiansoftware.java.constants.ConstantPool;
+
 import java.io.DataInputStream;
 import java.io.IOException;
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.viridiansoftware.java;
+package com.viridiansoftware.java.attributes;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -31,7 +31,7 @@ public class LineNumberTable {
      *            the stream of the class
      * @throws IOException
      */
-    LineNumberTable( DataInputStream input ) throws IOException {
+    public LineNumberTable( DataInputStream input ) throws IOException {
         int count = input.readUnsignedShort();
         start_pc = new int[count];
         line_number = new int[count];

@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.viridiansoftware.java;
+package com.viridiansoftware.java.attributes;
 
+import com.viridiansoftware.java.CodeInputStream;
+import com.viridiansoftware.java.constants.ConstantClass;
+import com.viridiansoftware.java.constants.ConstantMethodRef;
+import com.viridiansoftware.java.constants.ConstantPool;
 import lombok.NonNull;
 
 import java.io.DataInputStream;
@@ -27,9 +31,9 @@ public class Code {
     private final int maxLocals;
     private final byte[] codeData;
     private final TryCatchFinally[] exceptionTable;
-    private final Attributes      attributes;
-    private LineNumberTable       lineNumberTable;
-    private LocalVariableTable    localVariableTable;
+    private final Attributes attributes;
+    private LineNumberTable lineNumberTable;
+    private LocalVariableTable localVariableTable;
 
     /**
      * The code of a method attribute.
@@ -68,7 +72,7 @@ public class Code {
         if( lineNumberTable != null ){
             return lineNumberTable;
         }
-        Attributes.AttributeInfo data = attributes.get( "LineNumberTable" );
+        AttributeInfo data = attributes.get( "LineNumberTable" );
         if( data != null ) {
             lineNumberTable = new LineNumberTable( data.getDataInputStream() );
         }
@@ -79,7 +83,7 @@ public class Code {
         if( localVariableTable != null ){
             return localVariableTable;
         }
-        Attributes.AttributeInfo data = attributes.get( "LocalVariableTable" );
+        AttributeInfo data = attributes.get( "LocalVariableTable" );
         if( data != null ) {
             localVariableTable = new LocalVariableTable( maxLocals, constantPool );
             localVariableTable.read( data.getDataInputStream(), true );

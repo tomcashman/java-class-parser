@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2019 Viridian Software Ltd
+ * Copyright 2019 Volker Berlin (i-net software)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.viridiansoftware.java;
+package com.viridiansoftware.java.constants;
 
-public class ConstantMethodType {
-	private final String descriptor;
+public class ConstantInterfaceRef extends ConstantRef {
 
-	public ConstantMethodType(String descriptor) {
-		this.descriptor = descriptor;
-	}
-
-	public String getDescriptor() {
-		return descriptor;
-	}
+    public ConstantInterfaceRef( ConstantClass constClass, ConstantNameAndType nameAndType ) {
+        super( constClass, nameAndType );
+    }
 }

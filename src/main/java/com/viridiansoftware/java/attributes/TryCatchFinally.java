@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.viridiansoftware.java;
+package com.viridiansoftware.java.attributes;
 
+import com.viridiansoftware.java.constants.ConstantClass;
+import com.viridiansoftware.java.constants.ConstantPool;
 import lombok.NonNull;
 
 import java.io.DataInputStream;
@@ -35,7 +37,7 @@ public class TryCatchFinally {
      * @param constantPool
      * @throws IOException
      */
-    TryCatchFinally( DataInputStream input, @NonNull ConstantPool constantPool ) throws IOException {
+    public TryCatchFinally( DataInputStream input, @NonNull ConstantPool constantPool ) throws IOException {
         start = input.readUnsignedShort();
         end = input.readUnsignedShort();
         handler = input.readUnsignedShort();

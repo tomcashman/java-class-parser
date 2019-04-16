@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.viridiansoftware.java;
+package com.viridiansoftware.java.attributes;
+
+import com.viridiansoftware.java.constants.ConstantPool;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -42,7 +44,7 @@ public class LocalVariable {
      * @throws IOException
      *             if any I/O error occurs.
      */
-    LocalVariable( DataInputStream input, int position, ConstantPool constantPool ) throws IOException {
+    public LocalVariable( DataInputStream input, int position, ConstantPool constantPool ) throws IOException {
         start_pc = input.readUnsignedShort();
         length = input.readUnsignedShort();
         name_index = input.readUnsignedShort();

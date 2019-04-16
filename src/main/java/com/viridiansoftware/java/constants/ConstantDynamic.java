@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2019 Volker Berlin (i-net software)
+ * Copyright 2019 Viridian Software Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.viridiansoftware.java;
+package com.viridiansoftware.java.constants;
 
-public class ConstantNameAndType{
+public class ConstantDynamic {
+	private final int bootstrapMethodIndex;
+	private final ConstantNameAndType nameAndType;
 
-    private final String name;
-    private final String type;
+	public ConstantDynamic(int bootstrapMethodIndex, ConstantNameAndType nameAndType) {
+		this.bootstrapMethodIndex = bootstrapMethodIndex;
+		this.nameAndType = nameAndType;
+	}
 
-    public ConstantNameAndType(String name, String type){
-        this.name = name;
-        this.type = type;
-    }
+	public int getBootstrapMethodIndex() {
+		return bootstrapMethodIndex;
+	}
 
-    public String getName(){
-        return name;
-    }
-
-    /**
-     * The type of the variable in class file syntax.
-     * @return the type
-     */
-    public String getType(){
-        return type;
-    }
+	public ConstantNameAndType getNameAndType() {
+		return nameAndType;
+	}
 }

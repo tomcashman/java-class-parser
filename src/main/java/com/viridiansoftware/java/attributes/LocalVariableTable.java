@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.viridiansoftware.java;
+package com.viridiansoftware.java.attributes;
 
+import com.viridiansoftware.java.constants.ConstantPool;
 import lombok.NonNull;
 
 import java.io.DataInputStream;
@@ -35,7 +36,7 @@ public class LocalVariableTable {
      * @param constantPool
      *            Reference to the current ConstantPool
      */
-    LocalVariableTable( int maxLocals, ConstantPool constantPool ) {
+    public LocalVariableTable( int maxLocals, ConstantPool constantPool ) {
         table = new LocalVariable[maxLocals];
         tablePosition = new LocalVariable[maxLocals];
         this.constantPool = constantPool;

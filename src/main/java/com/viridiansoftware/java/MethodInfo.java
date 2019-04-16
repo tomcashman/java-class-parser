@@ -15,6 +15,11 @@
  ******************************************************************************/
 package com.viridiansoftware.java;
 
+import com.viridiansoftware.java.attributes.AttributeInfo;
+import com.viridiansoftware.java.attributes.Attributes;
+import com.viridiansoftware.java.attributes.Code;
+import com.viridiansoftware.java.constants.ConstantPool;
+
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,9 +33,9 @@ public class MethodInfo implements Member {
     private final List<MethodAccessFlag> methodAccessFlags = new ArrayList<MethodAccessFlag>(4);
     private final String       name;
     private final String       description;
-    private final Attributes   attributes;
+    private final Attributes attributes;
     private final ConstantPool constantPool;
-    private Code               code;
+    private Code code;
     private Exceptions         exceptions;
     private ClassFile          classFile;
     private Map<String,Map<String,Object>> annotations;
@@ -159,7 +164,7 @@ public class MethodInfo implements Member {
         if( code != null ){
             return code;
         }
-        Attributes.AttributeInfo data = attributes.get( "Code" );
+        AttributeInfo data = attributes.get( "Code" );
         if( data != null ) {
             code = new Code( data.getDataInputStream(), constantPool );
         }
@@ -183,7 +188,7 @@ public class MethodInfo implements Member {
      *             if an I/O error occurs
      */
     public String getSignature() throws IOException {
-        Attributes.AttributeInfo info = getAttributes().get( "Signature" );
+        AttributeInfo info = getAttributes().get( "Signature" );
         if( info != null ) {
             int idx = info.getDataInputStream().readShort();
             return (String)constantPool.get( idx );
@@ -196,7 +201,7 @@ public class MethodInfo implements Member {
         if( exceptions != null ) {
             return exceptions;
         }
-        Attributes.AttributeInfo data = attributes.get( "Exceptions" );
+        AttributeInfo data = attributes.get( "Exceptions" );
         if( data != null ) {
             exceptions = new Exceptions( data.getDataInputStream(), constantPool );
         }
@@ -214,7 +219,7 @@ public class MethodInfo implements Member {
      */
     public Map<String, Object> getAnnotation( String annotation ) throws IOException {
         if( annotations == null ) {
-            Attributes.AttributeInfo data = attributes.get( "RuntimeInvisibleAnnotations" );
+            AttributeInfo data = attributes.get( "RuntimeInvisibleAnnotations" );
             if( data != null ) {
                 annotations =  Annotations.read( data.getDataInputStream(), constantPool );
             } else {
