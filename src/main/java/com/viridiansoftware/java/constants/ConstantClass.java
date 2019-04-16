@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.viridiansoftware.java.constants;
 
+import com.viridiansoftware.java.PrimitiveType;
+
 public class ConstantClass {
     private final String name;
 
@@ -24,5 +26,25 @@ public class ConstantClass {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isArray() {
+        return ClassUtils.isArray(name);
+    }
+
+    public int getArrayDimensions() {
+        return ClassUtils.getArrayDimensions(name);
+    }
+
+    public boolean isArrayOfPrimitives() {
+        return ClassUtils.isArrayOfPrimitives(name);
+    }
+
+    public boolean isArrayOfObjects() {
+        return ClassUtils.isArrayOfObjects(name);
+    }
+
+    public String getReferenceClass() {
+        return ClassUtils.getReferenceClass(name);
     }
 }

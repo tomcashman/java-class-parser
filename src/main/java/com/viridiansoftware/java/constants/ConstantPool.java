@@ -31,7 +31,7 @@ public class ConstantPool {
 	 * @param input the stream of the class
 	 * @throws IOException if any IO error occur
 	 */
-	public ConstantPool(DataInputStream input) throws IOException {
+	public ConstantPool(int majorVersion, int minorVersion, DataInputStream input) throws IOException {
 		int count = input.readUnsignedShort();
 		Object[] pool = constantPool = new Object[count];
 		for (int i = 1; i < count; i++) {
@@ -108,7 +108,7 @@ public class ConstantPool {
 						if (pool[data[1]] instanceof int[] || pool[data[2]] instanceof int[]) {
 							repeat = true;
 						} else {
-							pool[i] = new ConstantInterfaceRef((ConstantClass) pool[data[1]], (ConstantNameAndType) pool[data[2]]);
+							pool[i] = new ConstantInterfaceMethodRef((ConstantClass) pool[data[1]], (ConstantNameAndType) pool[data[2]]);
 						}
 						break;
 					case 12: //CONSTANT_NameAndType
@@ -131,14 +131,40 @@ public class ConstantPool {
 								}
 								break;
 							case 5: //REF_invokeVirtual
-							case 6: //REF_invokeStatic
-							case 7: //REF_invokeSpecial
 							case 8: //REF_newInvokeSpecial
-							case 9: //REF_invokeInterface
 								if (pool[data[2]] instanceof ConstantMethodRef) {
 									pool[i] = new ConstantMethodHandle(data[1], (ConstantMethodRef) pool[data[2]]);
 								} else {
 									throw new IOException("Expected " + ConstantFieldRef.class.getSimpleName() +
+											" in constant pool index " + data[2] + " but found " + pool[data[2]].getClass().getSimpleName());
+								}
+								break;
+							case 6: //REF_invokeStatic
+							case 7: //REF_invokeSpecial
+								if(majorVersion < 52) {
+									if (pool[data[2]] instanceof ConstantMethodRef) {
+										pool[i] = new ConstantMethodHandle(data[1], (ConstantMethodRef) pool[data[2]]);
+									} else {
+										throw new IOException("Expected " + ConstantMethodRef.class.getSimpleName() +
+												" in constant pool index " + data[2] + " but found " + pool[data[2]].getClass().getSimpleName());
+									}
+								} else {
+									if (pool[data[2]] instanceof ConstantMethodRef) {
+										pool[i] = new ConstantMethodHandle(data[1], (ConstantMethodRef) pool[data[2]]);
+									} else if (pool[data[2]] instanceof ConstantInterfaceMethodRef) {
+										pool[i] = new ConstantMethodHandle(data[1], (ConstantInterfaceMethodRef) pool[data[2]]);
+									} else {
+										throw new IOException("Expected " + ConstantMethodRef.class.getSimpleName() +
+												" or " + ConstantInterfaceMethodRef.class.getSimpleName() +
+												" in constant pool index " + data[2] + " but found " + pool[data[2]].getClass().getSimpleName());
+									}
+								}
+								break;
+							case 9: //REF_invokeInterface
+								if (pool[data[2]] instanceof ConstantInterfaceMethodRef) {
+									pool[i] = new ConstantMethodHandle(data[1], (ConstantInterfaceMethodRef) pool[data[2]]);
+								} else {
+									throw new IOException("Expected " + ConstantInterfaceMethodRef.class.getSimpleName() +
 											" in constant pool index " + data[2] + " but found " + pool[data[2]].getClass().getSimpleName());
 								}
 								break;

@@ -16,6 +16,7 @@
 package com.viridiansoftware.java;
 
 import com.viridiansoftware.java.attributes.Attributes;
+import com.viridiansoftware.java.constants.ClassUtils;
 import com.viridiansoftware.java.constants.ConstantPool;
 
 import java.io.DataInputStream;
@@ -119,5 +120,37 @@ public class FieldInfo {
      */
     public String getType() {
         return description;
+    }
+
+    public boolean isArray() {
+        return ClassUtils.isArray(description);
+    }
+
+    public int getArrayDimensions() {
+        return ClassUtils.getArrayDimensions(description);
+    }
+
+    public boolean isPrimitive() {
+        return ClassUtils.isPrimitive(description);
+    }
+
+    public boolean isObject() {
+        return ClassUtils.isObject(description);
+    }
+
+    public boolean isArrayOfPrimitives() {
+        return ClassUtils.isArrayOfPrimitives(description);
+    }
+
+    public boolean isArrayOfObjects() {
+        return ClassUtils.isArrayOfObjects(description);
+    }
+
+    public PrimitiveType getPrimitiveType() {
+        return ClassUtils.getPrimitiveType(description);
+    }
+
+    public String getReferenceClass() {
+        return ClassUtils.getReferenceClass(description);
     }
 }

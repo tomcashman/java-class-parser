@@ -15,9 +15,9 @@
  ******************************************************************************/
 package com.viridiansoftware.java.constants;
 
-public class ConstantInterfaceRef extends ConstantRef {
+public class ConstantInterfaceMethodRef extends ConstantRef {
 
-    public ConstantInterfaceRef( ConstantClass constClass, ConstantNameAndType nameAndType ) {
+    public ConstantInterfaceMethodRef(ConstantClass constClass, ConstantNameAndType nameAndType ) {
         super( constClass, nameAndType );
     }
 }

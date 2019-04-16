@@ -63,7 +63,7 @@ public class ClassFile {
         minorVersion = input.readUnsignedShort();
         majorVersion = input.readUnsignedShort();
 
-        constantPool = new ConstantPool( input );
+        constantPool = new ConstantPool(majorVersion, minorVersion, input );
         accessFlags = input.readUnsignedShort();
 
         for(ClassAccessFlag classAccessFlag : ClassAccessFlag.values()) {
@@ -232,7 +232,8 @@ public class ClassFile {
         if( (accessFlags & 0x0200) > 0 ) {
             return Type.Interface;
         }
-        if( superClass.getName().equals( "java/lang/Enum" ) ) {
+        if( superClass != null && superClass.getName() != null &&
+                superClass.getName().equals( "java/lang/Enum" ) ) {
             return Type.Enum;
         }
         return Type.Class;
