@@ -54,6 +54,9 @@ public class ClassUtils {
 	}
 
 	public static PrimitiveType getPrimitiveType(String name) {
+		while(name.charAt(0) == '[') {
+			name = name.substring(1);
+		}
 		for(PrimitiveType primitiveType : PrimitiveType.values()) {
 			if(name.charAt(0) == primitiveType.getTerm()) {
 				return primitiveType;
