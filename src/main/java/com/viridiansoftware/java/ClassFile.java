@@ -139,6 +139,41 @@ public class ClassFile {
         return methods;
     }
 
+    public List<MethodInfo> getClassInitialisationMethods() {
+        final List<MethodInfo> results = new ArrayList<MethodInfo>(2);
+        for( MethodInfo method : methods ) {
+            if( method.getName().equals("<clinit>")) {
+                results.add(method);
+            }
+        }
+        return results;
+    }
+
+    public List<MethodInfo> getConstructorMethods() {
+        final List<MethodInfo> results = new ArrayList<MethodInfo>(2);
+        for( MethodInfo method : methods ) {
+            if( method.getName().equals("<init>")) {
+                results.add(method);
+            }
+        }
+        return results;
+    }
+
+    public List<MethodInfo> getNonInitMethods()
+    {
+        final List<MethodInfo> results = new ArrayList<MethodInfo>(2);
+        for( MethodInfo method : methods ) {
+            if( method.getName().equals("<init>")) {
+                continue;
+            }
+            if( method.getName().equals("<clinit>")) {
+                continue;
+            }
+            results.add(method);
+        }
+        return results;
+    }
+
     public List<MethodInfo> getMethod(String name) {
         final List<MethodInfo> results = new ArrayList<MethodInfo>(2);
         for( MethodInfo method : methods ) {

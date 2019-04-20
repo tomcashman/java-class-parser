@@ -65,6 +65,19 @@ public class ClassUtils {
 		return null;
 	}
 
+	public static PrimitiveOrReferenceType getPrimitiveOrReferenceType(String name) {
+		return getPrimitiveOrReferenceType(name.charAt(0));
+	}
+
+	public static PrimitiveOrReferenceType getPrimitiveOrReferenceType(char c) {
+		for(PrimitiveOrReferenceType primitiveOrRefType : PrimitiveOrReferenceType.values()) {
+			if(c == primitiveOrRefType.getTerm()) {
+				return primitiveOrRefType;
+			}
+		}
+		return null;
+	}
+
 	public static String getReferenceClass(String name) {
 		int offset = 0;
 

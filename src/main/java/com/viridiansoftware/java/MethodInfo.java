@@ -18,6 +18,7 @@ package com.viridiansoftware.java;
 import com.viridiansoftware.java.attributes.AttributeInfo;
 import com.viridiansoftware.java.attributes.Attributes;
 import com.viridiansoftware.java.attributes.Code;
+import com.viridiansoftware.java.constants.ClassUtils;
 import com.viridiansoftware.java.constants.ConstantPool;
 
 import java.io.DataInputStream;
@@ -39,6 +40,10 @@ public class MethodInfo implements Member {
     private Exceptions         exceptions;
     private ClassFile          classFile;
     private Map<String,Map<String,Object>> annotations;
+
+    private PrimitiveOrReferenceType returnType;
+    private String returnClass;
+    private List<MethodParameterInfo> methodParameters;
 
     /**
      * Read the method_info structure http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.6
@@ -171,7 +176,6 @@ public class MethodInfo implements Member {
         return code;
     }
 
-
     /**
      * Get the signature of the method without generic types.
      */
@@ -195,6 +199,60 @@ public class MethodInfo implements Member {
         } else {
             return description;
         }
+    }
+
+    public List<MethodParameterInfo> getMethodParameters() throws IOException {
+        if(methodParameters != null) {
+            return methodParameters;
+        }
+        methodParameters = new ArrayList<MethodParameterInfo>(2);
+
+        AttributeInfo info = getAttributes().get( "MethodParameters" );
+        if( info != null ) {
+            final String signature = getSignature();
+            final MethodParameters parameters = new MethodParameters(info.getDataInputStream(), constantPool);
+            MethodUtils.getMethodParameters(methodParameters, signature, parameters);
+        }
+        return methodParameters;
+    }
+
+    /**
+     * Returns if this method is a Void method
+     * @return True if void
+     * @throws IOException
+     */
+    public boolean isVoidMethod() throws IOException {
+        return getReturnType() == null;
+    }
+
+    /**
+     * Returns the return type of the method
+     * @return null if a Void method
+     * @throws IOException
+     */
+    public PrimitiveOrReferenceType getReturnType() throws IOException {
+        if(returnType != null) {
+            return returnType;
+        }
+        final String signature = getSignature();
+        final String returnSignature = signature.substring(signature.indexOf(')') + 1);
+        returnType = ClassUtils.getPrimitiveOrReferenceType(returnSignature);
+        return returnType;
+    }
+
+    /**
+     * If the return type is a class or array of classes, returns the class name
+     * @return null if not correct type
+     * @throws IOException
+     */
+    public String getReturnClass() throws IOException {
+        if(returnClass != null) {
+            return returnClass;
+        }
+        final String signature = getSignature();
+        final String returnSignature = signature.substring(signature.indexOf(')') + 1);
+        returnClass = ClassUtils.getReferenceClass(returnSignature);
+        return returnClass;
     }
 
     public Exceptions getExceptions() throws IOException {
