@@ -1,9 +1,42 @@
-package com.viridiansoftware.java.constants;
+/*******************************************************************************
+ * Copyright 2019 Viridian Software Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+package com.viridiansoftware.java.utils;
 
-import com.viridiansoftware.java.PrimitiveOrReferenceType;
 import com.viridiansoftware.java.PrimitiveType;
 
 public class ClassUtils {
+	private static final String [] EMPTY_GENERICS = new String[0];
+
+	public static boolean hasGenerics(String className) {
+		if(!className.contains("<")) {
+			return false;
+		}
+		if(!className.contains(">")) {
+			return false;
+		}
+		return true;
+	}
+
+	public static String [] getGenericTypes(String className) {
+		if(!hasGenerics(className)) {
+			return EMPTY_GENERICS;
+		}
+		final String genericClasses = className.substring(className.indexOf('<') + 1, className.lastIndexOf('>'));
+		return genericClasses.split(";");
+	}
 
 	public static boolean isArray(String name) {
 		return name.startsWith("[");
@@ -57,19 +90,19 @@ public class ClassUtils {
 		while(name.charAt(0) == '[') {
 			name = name.substring(1);
 		}
+		return getPrimitiveType(name.charAt(0));
+	}
+
+	public static PrimitiveType getPrimitiveType(char c) {
 		for(PrimitiveType primitiveType : PrimitiveType.values()) {
-			if(name.charAt(0) == primitiveType.getTerm()) {
+			if(c == primitiveType.getTerm()) {
 				return primitiveType;
 			}
 		}
 		return null;
 	}
 
-	public static PrimitiveOrReferenceType getPrimitiveOrReferenceType(String name) {
-		return getPrimitiveOrReferenceType(name.charAt(0));
-	}
-
-	public static PrimitiveOrReferenceType getPrimitiveOrReferenceType(char c) {
+	static PrimitiveOrReferenceType getPrimitiveOrReferenceType(char c) {
 		for(PrimitiveOrReferenceType primitiveOrRefType : PrimitiveOrReferenceType.values()) {
 			if(c == primitiveOrRefType.getTerm()) {
 				return primitiveOrRefType;

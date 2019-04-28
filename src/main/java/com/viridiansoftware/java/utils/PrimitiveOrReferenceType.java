@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.viridiansoftware.java;
+package com.viridiansoftware.java.utils;
 
-public enum PrimitiveType {
+enum PrimitiveOrReferenceType {
 	BYTE('B'),
 	CHAR('C'),
 	DOUBLE('D'),
 	FLOAT('F'),
 	INT('I'),
 	LONG('J'),
+	OBJECT('L'),
 	SHORT('S'),
-	BOOLEAN('Z');
+	BOOLEAN('Z'),
+	ARRAY('[');
 
 	private final char term;
 
-	PrimitiveType(char term) {
+	PrimitiveOrReferenceType(char term) {
 		this.term = term;
 	}
 

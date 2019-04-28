@@ -15,9 +15,11 @@
  ******************************************************************************/
 package com.viridiansoftware.java;
 
+import com.viridiansoftware.java.attributes.AttributeInfo;
 import com.viridiansoftware.java.attributes.Attributes;
-import com.viridiansoftware.java.constants.ClassUtils;
 import com.viridiansoftware.java.constants.ConstantPool;
+import com.viridiansoftware.java.signature.FieldSignature;
+import com.viridiansoftware.java.utils.ClassUtils;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -34,7 +36,11 @@ public class FieldInfo {
     private final List<FieldAccessFlag> fieldAccessFlags = new ArrayList<FieldAccessFlag>(2);
     private final String     name;
     private final String     description;
+    private final ConstantPool constantPool;
     private final Attributes attributes;
+
+    private String signature;
+    private FieldSignature fieldSignature;
 
     /**
      * Read a single FieldInfo.
@@ -46,6 +52,7 @@ public class FieldInfo {
      */
     FieldInfo(DataInputStream input, ConstantPool constantPool) throws IOException {
         this.accessFlags = input.readUnsignedShort();
+        this.constantPool = constantPool;
 
         for(FieldAccessFlag fieldAccessFlag : FieldAccessFlag.values()) {
             if((fieldAccessFlag.getMask() & accessFlags) == fieldAccessFlag.getMask()) {
@@ -120,6 +127,41 @@ public class FieldInfo {
      */
     public String getType() {
         return description;
+    }
+
+    /**
+     * Get the signature of the field with generic types.
+     *
+     * @return the signature
+     * @throws IOException
+     *             if an I/O error occurs
+     */
+    public String getSignature() throws IOException {
+        if(signature != null) {
+            return signature;
+        }
+        AttributeInfo info = getAttributes().get( "Signature" );
+        if( info != null ) {
+            int idx = info.getDataInputStream().readShort();
+            signature = (String)constantPool.get( idx );
+        } else {
+            signature = description;
+        }
+        return signature;
+    }
+
+    /**
+     * @return the attributes
+     */
+    public Attributes getAttributes() {
+        return attributes;
+    }
+
+    public FieldSignature getFieldSignature() throws IOException {
+        if(fieldSignature == null) {
+            fieldSignature = new FieldSignature(getSignature());
+        }
+        return fieldSignature;
     }
 
     public boolean isArray() {

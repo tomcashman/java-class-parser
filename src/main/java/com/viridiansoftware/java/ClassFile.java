@@ -19,6 +19,8 @@ import com.viridiansoftware.java.attributes.AttributeInfo;
 import com.viridiansoftware.java.attributes.Attributes;
 import com.viridiansoftware.java.constants.ConstantClass;
 import com.viridiansoftware.java.constants.ConstantPool;
+import com.viridiansoftware.java.signature.ClassSignature;
+import com.viridiansoftware.java.signature.antlr.SignatureParser;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -45,6 +47,7 @@ public class ClassFile {
     private final Attributes attributes;
     private String                thisSignature;
     private String                superSignature;
+    private ClassSignature        classSignature;
 
     /**
      * Load a class file and create a model of the class.
@@ -105,6 +108,7 @@ public class ClassFile {
                     break;
                 }
             }
+            classSignature = new ClassSignature(signature);
         }
     }
 
@@ -258,6 +262,29 @@ public class ClassFile {
      */
     public String getSuperSignature() {
         return superSignature;
+    }
+
+    /**
+     * Gets the parsed {@link ClassSignature}
+     */
+    public ClassSignature getClassSignature() {
+        return classSignature;
+    }
+
+    public ResolvedTypeVariable resolveTypeVariable(String variableName) throws UnresolvedTypeVariableException, IOException {
+        if(classSignature == null) {
+            throw new UnresolvedTypeVariableException(getSourceFile(), variableName);
+        }
+        if(variableName.startsWith("T")) {
+            variableName = variableName.substring(1);
+        }
+        for(int i = 0; i < classSignature.getTotalTypeParameters(); i++) {
+            final SignatureParser.TypeParameterContext typeParameterContext = classSignature.getTypeParameter(i);
+            if(typeParameterContext.identifier().getText().equals(variableName)) {
+                return new ResolvedTypeVariable(typeParameterContext);
+            }
+        }
+        throw new UnresolvedTypeVariableException(getSourceFile(), variableName);
     }
 
     /**

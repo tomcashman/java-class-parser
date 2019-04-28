@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.viridiansoftware.java.constants;
 
+import com.viridiansoftware.java.utils.ClassUtils;
 import org.junit.Assert;
 import org.junit.Test;
 

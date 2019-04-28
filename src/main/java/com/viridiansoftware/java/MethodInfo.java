@@ -18,8 +18,9 @@ package com.viridiansoftware.java;
 import com.viridiansoftware.java.attributes.AttributeInfo;
 import com.viridiansoftware.java.attributes.Attributes;
 import com.viridiansoftware.java.attributes.Code;
-import com.viridiansoftware.java.constants.ClassUtils;
 import com.viridiansoftware.java.constants.ConstantPool;
+import com.viridiansoftware.java.signature.MethodSignature;
+import com.viridiansoftware.java.signature.antlr.SignatureParser;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -41,9 +42,9 @@ public class MethodInfo implements Member {
     private ClassFile          classFile;
     private Map<String,Map<String,Object>> annotations;
 
-    private PrimitiveOrReferenceType returnType;
-    private String returnClass;
-    private List<MethodParameterInfo> methodParameters;
+    private String signature;
+    private MethodParameters methodParameters;
+    private MethodSignature methodSignature;
 
     /**
      * Read the method_info structure http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.6
@@ -192,28 +193,40 @@ public class MethodInfo implements Member {
      *             if an I/O error occurs
      */
     public String getSignature() throws IOException {
+        if(signature != null) {
+            return signature;
+        }
         AttributeInfo info = getAttributes().get( "Signature" );
         if( info != null ) {
             int idx = info.getDataInputStream().readShort();
-            return (String)constantPool.get( idx );
+            signature = (String)constantPool.get( idx );
         } else {
-            return description;
+            signature = description;
         }
+        return signature;
     }
 
-    public List<MethodParameterInfo> getMethodParameters() throws IOException {
+    public MethodParameters getMethodParameters() throws IOException {
         if(methodParameters != null) {
             return methodParameters;
         }
-        methodParameters = new ArrayList<MethodParameterInfo>(2);
-
         AttributeInfo info = getAttributes().get( "MethodParameters" );
         if( info != null ) {
-            final String signature = getSignature();
-            final MethodParameters parameters = new MethodParameters(info.getDataInputStream(), constantPool);
-            MethodUtils.getMethodParameters(methodParameters, signature, parameters);
+            methodParameters = new MethodParameters(info.getDataInputStream(), constantPool);
+        } else {
+            methodParameters = new MethodParameters(new String [0]);
         }
         return methodParameters;
+    }
+
+    /**
+     * Returns the parsed {@link MethodSignature}
+     */
+    public MethodSignature getMethodSignature() throws IOException {
+        if(methodSignature == null) {
+            methodSignature = new MethodSignature(getSignature());
+        }
+        return methodSignature;
     }
 
     /**
@@ -222,48 +235,54 @@ public class MethodInfo implements Member {
      * @throws IOException
      */
     public boolean isVoidMethod() throws IOException {
-        return getReturnType() == null;
+        return getMethodSignature().isVoidMethod();
     }
 
-    /**
-     * Returns the return type of the method
-     * @return null if a Void method
-     * @throws IOException
-     */
-    public PrimitiveOrReferenceType getReturnType() throws IOException {
-        if(returnType != null) {
-            return returnType;
-        }
-        final String signature = getSignature();
-        final String returnSignature = signature.substring(signature.indexOf(')') + 1);
-        returnType = ClassUtils.getPrimitiveOrReferenceType(returnSignature);
-        return returnType;
+    public int getTotalTypeParameters() throws IOException {
+        return getMethodSignature().getTotalTypeParameters();
     }
 
-    /**
-     * If the return type is a class or array of classes, returns the class name
-     * @return null if not correct type
-     * @throws IOException
-     */
-    public String getReturnClass() throws IOException {
-        if(returnClass != null) {
-            return returnClass;
-        }
-        final String signature = getSignature();
-        final String returnSignature = signature.substring(signature.indexOf(')') + 1);
-        returnClass = ClassUtils.getReferenceClass(returnSignature);
-        return returnClass;
+    public SignatureParser.TypeParameterContext getTypeParameter(int i) throws IOException {
+        return getMethodSignature().getTypeParameter(i);
     }
 
-    public Exceptions getExceptions() throws IOException {
-        if( exceptions != null ) {
-            return exceptions;
+    public int getTotalMethodArguments() throws IOException {
+        return getMethodSignature().getTotalMethodArguments();
+    }
+
+    public String getMethodArgumentName(int i) throws IOException {
+        return getMethodParameters().getParameterNames()[i];
+    }
+
+    public SignatureParser.JavaTypeSignatureContext getMethodArgumentType(int i) throws IOException {
+        return getMethodSignature().getMethodArgument(i);
+    }
+
+    public int getTotalThrowsSignatures() throws IOException {
+        return getMethodSignature().getTotalThrowsSignatures();
+    }
+
+    public SignatureParser.ThrowsSignatureContext getThrowsSignature(int i) throws IOException {
+        return getMethodSignature().getThrowsSignature(i);
+    }
+
+    public ResolvedTypeVariable resolveTypeVariable(String variableName) throws UnresolvedTypeVariableException, IOException {
+        if(variableName.startsWith("T")) {
+            variableName = variableName.substring(1);
         }
-        AttributeInfo data = attributes.get( "Exceptions" );
-        if( data != null ) {
-            exceptions = new Exceptions( data.getDataInputStream(), constantPool );
+
+        for(int i = 0; i < methodSignature.getTotalTypeParameters(); i++) {
+            final SignatureParser.TypeParameterContext typeParameterContext = methodSignature.getTypeParameter(i);
+            if(!typeParameterContext.identifier().getText().equals(variableName)) {
+                continue;
+            }
+            if(typeParameterContext.classBound().referenceTypeSignature() == null
+                && typeParameterContext.interfaceBounds() == null) {
+                continue;
+            }
+            return new ResolvedTypeVariable(typeParameterContext);
         }
-        return exceptions;
+        return classFile.resolveTypeVariable(variableName);
     }
 
     /**

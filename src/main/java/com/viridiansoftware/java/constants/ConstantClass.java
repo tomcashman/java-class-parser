@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.viridiansoftware.java.constants;
 
-import com.viridiansoftware.java.PrimitiveType;
+import com.viridiansoftware.java.utils.ClassUtils;
 
 public class ConstantClass {
     private final String name;

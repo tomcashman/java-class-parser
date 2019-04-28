@@ -35,6 +35,11 @@ public class MethodParameters {
 		}
 	}
 
+	public MethodParameters(String [] parameterNames) {
+		this.parameterNames = parameterNames;
+		this.parameterAccessFlags = new int[parameterNames.length];
+	}
+
 	public String[] getParameterNames() {
 		return parameterNames;
 	}
