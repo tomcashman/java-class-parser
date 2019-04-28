@@ -16,6 +16,7 @@
 package com.viridiansoftware.java.utils;
 
 import com.viridiansoftware.java.PrimitiveType;
+import com.viridiansoftware.java.signature.antlr.SignatureParser;
 
 public class ClassUtils {
 	private static final String [] EMPTY_GENERICS = new String[0];
@@ -36,6 +37,28 @@ public class ClassUtils {
 		}
 		final String genericClasses = className.substring(className.indexOf('<') + 1, className.lastIndexOf('>'));
 		return genericClasses.split(";");
+	}
+
+	private static void appendPackageSpecifier(StringBuilder result, SignatureParser.PackageSpecifierContext context) {
+		if(context.identifier() == null) {
+			return;
+		}
+		result.append(context.identifier().getText());
+		result.append('/');
+
+		if(context.packageSpecifier() == null) {
+			return;
+		}
+		for(int i = 0; i < context.packageSpecifier().size(); i++) {
+			appendPackageSpecifier(result, context.packageSpecifier(i));
+		}
+	}
+
+	public static String getQualifiedSimpleClassName(SignatureParser.ClassTypeSignatureContext context) {
+		final StringBuilder result = new StringBuilder();
+		appendPackageSpecifier(result, context.packageSpecifier());
+		result.append(context.simpleClassTypeSignature().identifier().getText());
+		return result.toString();
 	}
 
 	public static boolean isArray(String name) {
