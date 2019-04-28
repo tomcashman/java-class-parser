@@ -285,6 +285,10 @@ public class MethodInfo implements Member {
         return classFile.resolveTypeVariable(variableName);
     }
 
+    public SignatureParser.JavaTypeSignatureContext getResultSignature() throws IOException {
+        return getMethodSignature().getReturnType();
+    }
+
     /**
      * Get a single annotation or null
      * 
