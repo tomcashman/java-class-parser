@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class MethodInfo implements Member {
+public class MethodInfo implements Member, TypeVariableResolver {
 
     private final int          accessFlags;
     private final List<MethodAccessFlag> methodAccessFlags = new ArrayList<MethodAccessFlag>(4);

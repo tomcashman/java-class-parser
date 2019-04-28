@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html
  */
-public class ClassFile {
+public class ClassFile implements TypeVariableResolver {
 
     private final DataInputStream input;
     private final int             minorVersion;
