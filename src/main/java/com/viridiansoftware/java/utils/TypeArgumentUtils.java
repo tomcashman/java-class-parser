@@ -39,7 +39,7 @@ public class TypeArgumentUtils {
 		return typeArgumentContext.WildcardIndicator().getText().equals("-");
 	}
 
-	public boolean isAnyType(SignatureParser.TypeArgumentContext typeArgumentContext) {
+	public static boolean isAnyType(SignatureParser.TypeArgumentContext typeArgumentContext) {
 		return typeArgumentContext.ASTERISK() != null;
 	}
 }
