@@ -21,10 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ResolvedTypeVariable {
+	private final String variableName;
 	private final SignatureParser.ReferenceTypeSignatureContext classBound;
 	private final List<SignatureParser.ReferenceTypeSignatureContext> interfaceBounds = new ArrayList<SignatureParser.ReferenceTypeSignatureContext>(1);
 
-	public ResolvedTypeVariable(SignatureParser.TypeParameterContext typeParameterContext) {
+	public ResolvedTypeVariable(String variableName, SignatureParser.TypeParameterContext typeParameterContext) {
+		this.variableName = variableName;
+
 		if(typeParameterContext.classBound().referenceTypeSignature() != null) {
 			classBound = typeParameterContext.classBound().referenceTypeSignature();
 		} else {
@@ -39,6 +42,10 @@ public class ResolvedTypeVariable {
 		for(int i = 0; i < typeParameterContext.interfaceBounds().interfaceBound().size(); i++) {
 			interfaceBounds.add(typeParameterContext.interfaceBounds().interfaceBound(i).referenceTypeSignature());
 		}
+	}
+
+	public String getVariableName() {
+		return variableName;
 	}
 
 	public SignatureParser.ReferenceTypeSignatureContext getClassBound() {

@@ -281,7 +281,7 @@ public class ClassFile implements TypeVariableResolver {
         for(int i = 0; i < classSignature.getTotalTypeParameters(); i++) {
             final SignatureParser.TypeParameterContext typeParameterContext = classSignature.getTypeParameter(i);
             if(typeParameterContext.identifier().getText().equals(variableName)) {
-                return new ResolvedTypeVariable(typeParameterContext);
+                return new ResolvedTypeVariable(variableName, typeParameterContext);
             }
         }
         throw new UnresolvedTypeVariableException(getSourceFile(), variableName);

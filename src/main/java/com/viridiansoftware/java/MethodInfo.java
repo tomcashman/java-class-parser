@@ -280,7 +280,7 @@ public class MethodInfo implements Member, TypeVariableResolver {
                 && typeParameterContext.interfaceBounds() == null) {
                 continue;
             }
-            return new ResolvedTypeVariable(typeParameterContext);
+            return new ResolvedTypeVariable(variableName, typeParameterContext);
         }
         return classFile.resolveTypeVariable(variableName);
     }
