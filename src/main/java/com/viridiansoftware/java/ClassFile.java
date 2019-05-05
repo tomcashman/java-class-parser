@@ -15,8 +15,7 @@
  ******************************************************************************/
 package com.viridiansoftware.java;
 
-import com.viridiansoftware.java.attributes.AttributeInfo;
-import com.viridiansoftware.java.attributes.Attributes;
+import com.viridiansoftware.java.attributes.*;
 import com.viridiansoftware.java.constants.ConstantClass;
 import com.viridiansoftware.java.constants.ConstantPool;
 import com.viridiansoftware.java.signature.ClassSignature;
@@ -48,6 +47,9 @@ public class ClassFile implements TypeVariableResolver {
     private String                thisSignature;
     private String                superSignature;
     private ClassSignature        classSignature;
+    private NestHost              nestHost;
+    private NestMembers           nestMembers;
+    private InnerClasses          innerClasses;
 
     /**
      * Load a class file and create a model of the class.
@@ -109,6 +111,18 @@ public class ClassFile implements TypeVariableResolver {
                 }
             }
             classSignature = new ClassSignature(signature);
+        }
+        AttributeInfo nestHostInfo = attributes.get("NestHost");
+        if(nestHostInfo != null) {
+            nestHost = new NestHost(nestHostInfo.getDataInputStream(), constantPool);
+        }
+        AttributeInfo nestMembersInfo = attributes.get("NestMembers");
+        if(nestMembersInfo != null) {
+            nestMembers = new NestMembers(nestMembersInfo.getDataInputStream(), constantPool);
+        }
+        AttributeInfo innerClassesInfo = attributes.get("InnerClasses");
+        if(innerClassesInfo != null) {
+            innerClasses = new InnerClasses(innerClassesInfo.getDataInputStream(), constantPool);
         }
     }
 
@@ -285,6 +299,18 @@ public class ClassFile implements TypeVariableResolver {
             }
         }
         throw new UnresolvedTypeVariableException(getSourceFile(), variableName);
+    }
+
+    public NestHost getNestHost() {
+        return nestHost;
+    }
+
+    public NestMembers getNestMembers() {
+        return nestMembers;
+    }
+
+    public InnerClasses getInnerClasses() {
+        return innerClasses;
     }
 
     /**

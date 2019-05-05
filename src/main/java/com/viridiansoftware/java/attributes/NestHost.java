@@ -13,31 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.viridiansoftware.java;
+package com.viridiansoftware.java.attributes;
 
-public enum ClassAccessFlag {
-	PUBLIC(0x0001),
-	PRIVATE(0x0002),
-	PROTECTED(0x0004),
-	STATIC(0x0008),
+import com.viridiansoftware.java.constants.ConstantClass;
+import com.viridiansoftware.java.constants.ConstantPool;
 
-	FINAL(0x0010),
-	SUPER(0x0020),
+import java.io.DataInputStream;
+import java.io.IOException;
 
-	INTERFACE(0x0200),
-	ABSTRACT(0x0400),
+public class NestHost {
+	private final ConstantClass hostClass;
 
-	SYNTHETIC(0x1000),
-	ANNOTATION(0x2000),
-	ENUM(0x4000);
-
-	private final int mask;
-
-	ClassAccessFlag(int mask) {
-		this.mask = mask;
+	public NestHost(DataInputStream dataInputStream, ConstantPool constantPool) throws IOException {
+		super();
+		hostClass = (ConstantClass) constantPool.get(dataInputStream.readUnsignedShort());
 	}
 
-	public int getMask() {
-		return mask;
+	public ConstantClass getHostClass() {
+		return hostClass;
 	}
 }
