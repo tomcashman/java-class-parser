@@ -22,7 +22,7 @@ if(project.hasProperty('ossrhUser') && project.hasProperty("release")) {
 }
 
 ext {
-	descriptorParserVersion="1.0.0-SNAPSHOT"
+	descriptorParserVersion="1.0.0"
 	lombokVersion="1.18.6"
 	signatureParserVersion="1.0.0"
 
