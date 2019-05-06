@@ -17,9 +17,13 @@ package com.viridiansoftware.java;
 
 import com.viridiansoftware.java.attributes.*;
 import com.viridiansoftware.java.constants.ConstantClass;
+import com.viridiansoftware.java.constants.ConstantNameAndType;
 import com.viridiansoftware.java.constants.ConstantPool;
+import com.viridiansoftware.java.descriptor.MethodDescriptor;
+import com.viridiansoftware.java.descriptor.antlr.DescriptorParser;
 import com.viridiansoftware.java.signature.ClassSignature;
 import com.viridiansoftware.java.signature.antlr.SignatureParser;
+import com.viridiansoftware.java.utils.ClassUtils;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -50,6 +54,7 @@ public class ClassFile implements TypeVariableResolver {
     private NestHost              nestHost;
     private NestMembers           nestMembers;
     private InnerClasses          innerClasses;
+    private EnclosingMethod       enclosingMethod;
 
     /**
      * Load a class file and create a model of the class.
@@ -123,6 +128,10 @@ public class ClassFile implements TypeVariableResolver {
         AttributeInfo innerClassesInfo = attributes.get("InnerClasses");
         if(innerClassesInfo != null) {
             innerClasses = new InnerClasses(innerClassesInfo.getDataInputStream(), constantPool);
+        }
+        AttributeInfo enclosingMethodInfo = attributes.get("EnclosingMethod");
+        if(enclosingMethodInfo != null) {
+            enclosingMethod = new EnclosingMethod(enclosingMethodInfo.getDataInputStream(), constantPool);
         }
     }
 
@@ -200,6 +209,15 @@ public class ClassFile implements TypeVariableResolver {
             }
         }
         return results;
+    }
+
+    public MethodInfo getMethod(ConstantNameAndType constantNameAndType) throws IOException {
+        for( MethodInfo method : methods ) {
+            if(method.matches(constantNameAndType)) {
+                return method;
+            }
+        }
+        return null;
     }
 
     public int getMethodCount( String name ) {
@@ -311,6 +329,10 @@ public class ClassFile implements TypeVariableResolver {
 
     public InnerClasses getInnerClasses() {
         return innerClasses;
+    }
+
+    public EnclosingMethod getEnclosingMethod() {
+        return enclosingMethod;
     }
 
     /**

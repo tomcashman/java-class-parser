@@ -18,9 +18,11 @@ package com.viridiansoftware.java;
 import com.viridiansoftware.java.attributes.AttributeInfo;
 import com.viridiansoftware.java.attributes.Attributes;
 import com.viridiansoftware.java.attributes.Code;
+import com.viridiansoftware.java.constants.ConstantNameAndType;
 import com.viridiansoftware.java.constants.ConstantPool;
 import com.viridiansoftware.java.signature.MethodSignature;
 import com.viridiansoftware.java.signature.antlr.SignatureParser;
+import com.viridiansoftware.java.utils.ClassUtils;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -287,6 +289,13 @@ public class MethodInfo implements Member, TypeVariableResolver {
 
     public SignatureParser.JavaTypeSignatureContext getResultSignature() throws IOException {
         return getMethodSignature().getReturnType();
+    }
+
+    public boolean matches(ConstantNameAndType constantNameAndType) throws IOException {
+        if(!getName().equals(constantNameAndType.getName())) {
+            return false;
+        }
+        return ClassUtils.isSameType(constantNameAndType.asMethodDescriptor(), getMethodSignature());
     }
 
     /**

@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.viridiansoftware.java.constants;
 
+import com.viridiansoftware.java.descriptor.MethodDescriptor;
+import com.viridiansoftware.java.signature.MethodSignature;
 import com.viridiansoftware.java.utils.ClassUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,5 +32,25 @@ public class ClassUtilsTest {
 		Assert.assertNull(ClassUtils.getReferenceClass("[[I"));
 		Assert.assertNull(ClassUtils.getReferenceClass("[I"));
 		Assert.assertNull(ClassUtils.getReferenceClass("I"));
+	}
+
+	@Test
+	public void testIsSameType() {
+		Assert.assertTrue(ClassUtils.isSameType(new MethodDescriptor("()V"), new MethodSignature("()V")));
+		Assert.assertTrue(ClassUtils.isSameType(new MethodDescriptor("(IBZ)V"), new MethodSignature("(IBZ)V")));
+		Assert.assertTrue(ClassUtils.isSameType(new MethodDescriptor("()Ljava/lang/Object;"), new MethodSignature("()Ljava/lang/Object;")));
+		Assert.assertTrue(ClassUtils.isSameType(new MethodDescriptor("()[Ljava/lang/Object;"), new MethodSignature("()[Ljava/lang/Object;")));
+		Assert.assertTrue(ClassUtils.isSameType(new MethodDescriptor("([I)V"), new MethodSignature("([I)V")));
+		Assert.assertTrue(ClassUtils.isSameType(new MethodDescriptor("([[C)V"), new MethodSignature("([[C)V")));
+		Assert.assertTrue(ClassUtils.isSameType(new MethodDescriptor("([[C[I)[[Z"), new MethodSignature("([[C[I)[[Z")));
+		Assert.assertTrue(ClassUtils.isSameType(new MethodDescriptor("([[Ljava/lang/Object;)V"), new MethodSignature("([[Ljava/lang/Object;)V")));
+		Assert.assertTrue(ClassUtils.isSameType(new MethodDescriptor("(Ljava/lang/Object;Ljava/lang/Object;)V"), new MethodSignature("(Ljava/lang/Object;Ljava/lang/Object;)V")));
+		Assert.assertTrue(ClassUtils.isSameType(new MethodDescriptor("(Ljava/lang/Object;Ljava/lang/List;)V"), new MethodSignature("(Ljava/lang/Object;Ljava/lang/List<TT;>;)V")));
+
+		Assert.assertFalse(ClassUtils.isSameType(new MethodDescriptor("(IBZ)V"), new MethodSignature("()V")));
+		Assert.assertFalse(ClassUtils.isSameType(new MethodDescriptor("(IBZ)V"), new MethodSignature("([I)V")));
+		Assert.assertFalse(ClassUtils.isSameType(new MethodDescriptor("([[C[Z)[[Z"), new MethodSignature("([[C[I)[[Z")));
+		Assert.assertFalse(ClassUtils.isSameType(new MethodDescriptor("()Ljava/lang/Object;"), new MethodSignature("()V")));
+		Assert.assertFalse(ClassUtils.isSameType(new MethodDescriptor("(Ljava/lang/Object;)V"), new MethodSignature("()V")));
 	}
 }

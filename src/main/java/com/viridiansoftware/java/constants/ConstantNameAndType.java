@@ -15,13 +15,16 @@
  ******************************************************************************/
 package com.viridiansoftware.java.constants;
 
-import com.viridiansoftware.java.PrimitiveType;
-import com.viridiansoftware.java.utils.ClassUtils;
+import com.viridiansoftware.java.descriptor.FieldDescriptor;
+import com.viridiansoftware.java.descriptor.MethodDescriptor;
 
 public class ConstantNameAndType{
 
     private final String name;
     private final String type;
+
+    private FieldDescriptor fieldDescriptor;
+    private MethodDescriptor methodDescriptor;
 
     public ConstantNameAndType(String name, String type){
         this.name = name;
@@ -40,35 +43,17 @@ public class ConstantNameAndType{
         return type;
     }
 
-    public boolean isArray() {
-        return ClassUtils.isArray(type);
+    public FieldDescriptor asFieldDescriptor() {
+        if(fieldDescriptor == null) {
+            fieldDescriptor = new FieldDescriptor(type);
+        }
+        return fieldDescriptor;
     }
 
-    public int getArrayDimensions() {
-        return ClassUtils.getArrayDimensions(type);
-    }
-
-    public boolean isPrimitive() {
-        return ClassUtils.isPrimitive(type);
-    }
-
-    public boolean isObject() {
-        return ClassUtils.isObject(type);
-    }
-
-    public boolean isArrayOfPrimitives() {
-        return ClassUtils.isArrayOfPrimitives(type);
-    }
-
-    public boolean isArrayOfObjects() {
-        return ClassUtils.isArrayOfObjects(type);
-    }
-
-    public PrimitiveType getPrimitiveType() {
-        return ClassUtils.getPrimitiveType(type);
-    }
-
-    public String getReferenceClass() {
-        return ClassUtils.getReferenceClass(type);
+    public MethodDescriptor asMethodDescriptor() {
+        if(methodDescriptor == null) {
+            methodDescriptor = new MethodDescriptor(type);
+        }
+        return methodDescriptor;
     }
 }
