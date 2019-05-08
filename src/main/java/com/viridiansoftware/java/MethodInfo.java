@@ -295,6 +295,9 @@ public class MethodInfo implements Member, TypeVariableResolver {
         if(!getName().equals(constantNameAndType.getName())) {
             return false;
         }
+        if(description != null) {
+            return description.equals(constantNameAndType.getType());
+        }
         return ClassUtils.isSameType(constantNameAndType.asMethodDescriptor(), getMethodSignature());
     }
 
