@@ -154,6 +154,22 @@ public class MethodInfo implements Member, TypeVariableResolver {
     }
 
     /**
+     * Returns if the method is a final method
+     * @return True if the method is a final method
+     */
+    public boolean isFinal() {
+        return (accessFlags & MethodAccessFlag.FINAL.getMask()) > 0;
+    }
+
+    /**
+     * Returns if the method is a synchronized method
+     * @return True if the method is a synchronized method
+     */
+    public boolean isSynchronized() {
+        return (accessFlags & MethodAccessFlag.SYNCHRONIZED.getMask()) > 0;
+    }
+
+    /**
      * @return the name
      */
     @Override
@@ -307,6 +323,18 @@ public class MethodInfo implements Member, TypeVariableResolver {
             return description.equals(constantNameAndType.getType());
         }
         return ClassUtils.isSameType(constantNameAndType.asMethodDescriptor(), getMethodSignature());
+    }
+
+    public boolean isImplementationOf(MethodInfo methodInfo) {
+        if(!getName().equals(methodInfo.getName())) {
+            return false;
+        }
+        if(description != null && methodInfo.getType() != null) {
+            if(description.equals(methodInfo.getType())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
