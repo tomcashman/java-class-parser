@@ -170,6 +170,14 @@ public class MethodInfo implements Member, TypeVariableResolver {
     }
 
     /**
+     * Returns if the method is a synthetic method
+     * @return True if the method is a synthetic method
+     */
+    public boolean isSynthetic() {
+        return (accessFlags & MethodAccessFlag.SYNTHETIC.getMask()) > 0;
+    }
+
+    /**
      * @return the name
      */
     @Override
@@ -330,9 +338,7 @@ public class MethodInfo implements Member, TypeVariableResolver {
             return false;
         }
         if(description != null && methodInfo.getType() != null) {
-            if(description.equals(methodInfo.getType())) {
-                return true;
-            }
+            return description.equals(methodInfo.getType());
         }
         return false;
     }
