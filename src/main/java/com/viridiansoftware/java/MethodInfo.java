@@ -146,6 +146,14 @@ public class MethodInfo implements Member, TypeVariableResolver {
     }
 
     /**
+     * Returns if the method is an abstract method
+     * @return True if the method is an abstract method
+     */
+    public boolean isAbstract() {
+        return (accessFlags & MethodAccessFlag.ABSTRACT.getMask()) > 0;
+    }
+
+    /**
      * @return the name
      */
     @Override
