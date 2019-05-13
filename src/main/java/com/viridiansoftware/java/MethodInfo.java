@@ -20,16 +20,15 @@ import com.viridiansoftware.java.attributes.Attributes;
 import com.viridiansoftware.java.attributes.Code;
 import com.viridiansoftware.java.constants.ConstantNameAndType;
 import com.viridiansoftware.java.constants.ConstantPool;
+import com.viridiansoftware.java.descriptor.MethodDescriptor;
+import com.viridiansoftware.java.signature.ClassSignature;
 import com.viridiansoftware.java.signature.MethodSignature;
 import com.viridiansoftware.java.signature.antlr.SignatureParser;
 import com.viridiansoftware.java.utils.ClassUtils;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MethodInfo implements Member, TypeVariableResolver {
 
@@ -47,6 +46,7 @@ public class MethodInfo implements Member, TypeVariableResolver {
     private String signature;
     private MethodParameters methodParameters;
     private MethodSignature methodSignature;
+    private MethodDescriptor methodDescriptor;
 
     /**
      * Read the method_info structure http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.6
@@ -234,8 +234,6 @@ public class MethodInfo implements Member, TypeVariableResolver {
         if( info != null ) {
             int idx = info.getDataInputStream().readShort();
             signature = (String)constantPool.get( idx );
-        } else {
-            signature = description;
         }
         return signature;
     }
@@ -253,12 +251,23 @@ public class MethodInfo implements Member, TypeVariableResolver {
         return methodParameters;
     }
 
+    public MethodDescriptor getMethodDescriptor() {
+        if(methodDescriptor == null) {
+            methodDescriptor = new MethodDescriptor(getType());
+        }
+        return methodDescriptor;
+    }
+
     /**
      * Returns the parsed {@link MethodSignature}
      */
     public MethodSignature getMethodSignature() throws IOException {
         if(methodSignature == null) {
-            methodSignature = new MethodSignature(getSignature());
+            if(getSignature() != null) {
+                methodSignature = new MethodSignature(getSignature());
+            } else {
+                methodSignature = new MethodSignature(getType());
+            }
         }
         return methodSignature;
     }
@@ -333,14 +342,109 @@ public class MethodInfo implements Member, TypeVariableResolver {
         return ClassUtils.isSameType(constantNameAndType.asMethodDescriptor(), getMethodSignature());
     }
 
-    public boolean isImplementationOf(MethodInfo methodInfo) {
+    public boolean isImplementationOf(MethodInfo methodInfo) throws IOException {
+        return isImplementationOf(methodInfo, false);
+    }
+
+    public boolean isImplementationOf(MethodInfo methodInfo, boolean allowSyntheicImplementations) throws IOException {
         if(!getName().equals(methodInfo.getName())) {
             return false;
         }
+        if(!allowSyntheicImplementations && isSynthetic()) {
+            return false;
+        }
         if(description != null && methodInfo.getType() != null) {
-            return description.equals(methodInfo.getType());
+            if(description.equals(methodInfo.getType())) {
+                return true;
+            }
+        }
+        if(methodInfo.getSignature() != null) {
+            return isImplementationOf(methodInfo.getDeclaringClassFile(), methodInfo.getMethodSignature());
         }
         return false;
+    }
+
+    public boolean isImplementationOf(ClassFile declaringFile, MethodSignature methodSignature) throws IOException {
+        if(declaringFile.getClassSignature() == null || getDeclaringClassFile().getClassSignature() == null) {
+            if(getMethodSignature() != null) {
+                return getMethodSignature().getSignatureContext().getText().equals(methodSignature.getSignatureContext().getText());
+            }
+            return false;
+        }
+        if(!methodSignature.isVoidMethod() && isVoidMethod()) {
+            return false;
+        } else if(methodSignature.isVoidMethod() && !isVoidMethod()) {
+            return false;
+        }
+        if(methodSignature.getTotalMethodArguments() != getTotalMethodArguments()) {
+            return false;
+        }
+
+        final ClassSignature methodClassSignature = declaringFile.getClassSignature();
+        final String methodClassWithoutGenerics = declaringFile.getThisSignature();
+
+        final Map<String, String> resolvedTypes = new HashMap<String, String>();
+
+        final ClassSignature thisClassSignature = getDeclaringClassFile().getClassSignature();
+
+        if(thisClassSignature.getSuperclass() != null && thisClassSignature.getSuperclass().classTypeSignature() != null) {
+            String superClassWithoutGenerics = thisClassSignature.getSuperclass().classTypeSignature().getText();
+            if(superClassWithoutGenerics.contains("<")) {
+                superClassWithoutGenerics = superClassWithoutGenerics.substring(1, superClassWithoutGenerics.indexOf('<'));
+            } else {
+                superClassWithoutGenerics = superClassWithoutGenerics.substring(1, superClassWithoutGenerics.indexOf(';'));
+            }
+
+            if(superClassWithoutGenerics.equals(methodClassWithoutGenerics)) {
+                for(int i = 0; i < methodClassSignature.getTotalTypeParameters(); i++) {
+                    final String identifier = methodClassSignature.getTypeParameter(i).identifier().getText();
+                    if(thisClassSignature.getSuperclass().classTypeSignature().simpleClassTypeSignature().typeArguments() != null &&
+                            thisClassSignature.getSuperclass().classTypeSignature().simpleClassTypeSignature().typeArguments().typeArgument() != null) {
+                        resolvedTypes.put(identifier, thisClassSignature.getSuperclass().classTypeSignature().
+                                simpleClassTypeSignature().typeArguments().typeArgument(i).getText());
+                    } else {
+                        resolvedTypes.put(identifier, "Ljava/lang/Object;");
+                    }
+                }
+            }
+        }
+        for(int i = 0; i < thisClassSignature.getTotalSuperinterfaces(); i++) {
+            final SignatureParser.SuperinterfaceSignatureContext superinterfaceSignatureContext = thisClassSignature.getSuperinterface(i);
+            String superInterfaceWithoutGenerics = thisClassSignature.getSuperclass().classTypeSignature().getText();
+            if(superInterfaceWithoutGenerics.contains("<")) {
+                superInterfaceWithoutGenerics = superInterfaceWithoutGenerics.substring(1, superInterfaceWithoutGenerics.indexOf('<'));
+            } else {
+                superInterfaceWithoutGenerics = superInterfaceWithoutGenerics.substring(1, superInterfaceWithoutGenerics.indexOf(';'));
+            }
+
+            if(!superInterfaceWithoutGenerics.equals(methodClassWithoutGenerics)) {
+                continue;
+            }
+            for(int j = 0; j < methodClassSignature.getTotalTypeParameters(); j++) {
+                final String identifier = methodClassSignature.getTypeParameter(j).identifier().getText();
+                if(superinterfaceSignatureContext.classTypeSignature().simpleClassTypeSignature().typeArguments() != null &&
+                        superinterfaceSignatureContext.classTypeSignature().simpleClassTypeSignature().typeArguments().typeArgument() != null) {
+                    resolvedTypes.put(identifier, superinterfaceSignatureContext.classTypeSignature().
+                            simpleClassTypeSignature().typeArguments().typeArgument(j).getText());
+                } else {
+                    resolvedTypes.put(identifier, "Ljava/lang/Object;");
+                }
+            }
+        }
+
+        if(!methodSignature.isVoidMethod() && !isVoidMethod()) {
+            if(!isSameType(resolvedTypes, methodSignature.getReturnType(), getResultSignature())) {
+                return false;
+            }
+        }
+
+        for(int i = 0; i < methodSignature.getTotalTypeParameters(); i++) {
+            if(!isSameType(resolvedTypes, methodSignature.getMethodArgument(i), getMethodArgumentType(i))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -370,5 +474,150 @@ public class MethodInfo implements Member, TypeVariableResolver {
      */
     public ConstantPool getConstantPool() {
         return constantPool;
+    }
+
+    private boolean isSameType(Map<String, String> resolvedType, List<SignatureParser.ClassTypeSignatureSuffixContext> returnType1,
+                               List<SignatureParser.ClassTypeSignatureSuffixContext> returnType2) {
+        if(returnType1.size() != returnType2.size()) {
+            return false;
+        }
+        for(int i = 0; i < returnType1.size(); i++) {
+            if(!isSameType(resolvedType, returnType1.get(i).simpleClassTypeSignature(), returnType2.get(i).simpleClassTypeSignature())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isSameType(Map<String, String> resolvedType, SignatureParser.SimpleClassTypeSignatureContext returnType1,
+                               SignatureParser.SimpleClassTypeSignatureContext returnType2) {
+        if(returnType1.typeArguments() != null && returnType2.typeArguments() == null) {
+            return false;
+        }
+        if(returnType1.typeArguments() == null && returnType2.typeArguments() != null) {
+            return false;
+        }
+        if(returnType1.typeArguments() != null && returnType2.typeArguments() != null) {
+            if(returnType1.typeArguments().typeArgument() != null && returnType2.typeArguments().typeArgument() == null) {
+                return false;
+            }
+            if(returnType1.typeArguments().typeArgument() == null && returnType2.typeArguments().typeArgument() != null) {
+                return false;
+            }
+            if(returnType1.typeArguments().typeArgument() != null && returnType2.typeArguments().typeArgument() != null) {
+                if(returnType1.typeArguments().typeArgument().size() != returnType2.typeArguments().typeArgument().size()) {
+                    return false;
+                }
+                for(int i = 0; i < returnType1.typeArguments().typeArgument().size(); i++) {
+                    if(returnType1.typeArguments().typeArgument(i).ASTERISK() != null ||
+                            returnType2.typeArguments().typeArgument(i).ASTERISK() != null) {
+                        continue;
+                    }
+
+                    if(returnType1.typeArguments().typeArgument(i).referenceTypeSignature() != null &&
+                            returnType2.typeArguments().typeArgument(i).referenceTypeSignature() != null) {
+                        if(!isSameType(resolvedType, returnType1.typeArguments().typeArgument(i).referenceTypeSignature(),
+                                returnType2.typeArguments().typeArgument(i).referenceTypeSignature())) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return returnType1.identifier().getText().equals(returnType2.identifier().getText());
+    }
+
+    private boolean isSameType(Map<String, String> resolvedTypes, SignatureParser.ClassTypeSignatureContext returnType1,
+                               SignatureParser.ClassTypeSignatureContext returnType2) {
+        if(returnType1.packageSpecifier() != null && returnType2.packageSpecifier() == null) {
+            return false;
+        }
+        if(returnType1.packageSpecifier() == null && returnType2.packageSpecifier() != null) {
+            return false;
+        }
+        if(returnType1.packageSpecifier() != null && returnType2.packageSpecifier() != null) {
+            SignatureParser.PackageSpecifierContext specifierContext1 = returnType1.packageSpecifier();
+            SignatureParser.PackageSpecifierContext specifierContext2 = returnType1.packageSpecifier();
+
+            while(true) {
+                if(specifierContext1 == null && specifierContext2 == null) {
+                    break;
+                }
+                if(specifierContext1 != null && specifierContext2 == null) {
+                    return false;
+                }
+                if(specifierContext1 == null && specifierContext2 != null) {
+                    return false;
+                }
+                if(!specifierContext1.identifier().getText().equals(specifierContext2.identifier().getText())) {
+                    return false;
+                }
+                specifierContext1 = specifierContext1.packageSpecifier() != null ?
+                        specifierContext1.packageSpecifier(0) : null;
+                specifierContext2 = specifierContext1.packageSpecifier() != null ?
+                        specifierContext2.packageSpecifier(0) : null;
+            }
+        }
+        if(!isSameType(resolvedTypes, returnType1.simpleClassTypeSignature(), returnType2.simpleClassTypeSignature())) {
+            return false;
+        }
+        if(returnType1.classTypeSignatureSuffix() != null && returnType2.classTypeSignatureSuffix() == null) {
+            return false;
+        }
+        if(returnType1.classTypeSignatureSuffix() == null && returnType2.classTypeSignatureSuffix() != null) {
+            return false;
+        }
+        if(returnType1.classTypeSignatureSuffix() != null && returnType2.classTypeSignatureSuffix() != null) {
+            return isSameType(resolvedTypes, returnType1.classTypeSignatureSuffix(), returnType2.classTypeSignatureSuffix());
+        }
+        return true;
+    }
+
+    private boolean isSameType(Map<String, String> resolvedTypes, SignatureParser.ReferenceTypeSignatureContext returnType1,
+                               SignatureParser.ReferenceTypeSignatureContext returnType2) {
+        if(returnType1.classTypeSignature() != null && returnType2.classTypeSignature() != null) {
+            return isSameType(resolvedTypes, returnType1.classTypeSignature(), returnType2.classTypeSignature());
+        }
+        if(returnType1.arrayTypeSignature() != null && returnType2.arrayTypeSignature() != null) {
+            return isSameType(resolvedTypes, returnType1.arrayTypeSignature().javaTypeSignature(),
+                    returnType2.arrayTypeSignature().javaTypeSignature());
+        }
+        if(returnType1.typeVariableSignature() != null || returnType2.typeVariableSignature() != null) {
+            String class1 = "";
+            String class2 = "";
+            if(returnType1.typeVariableSignature() != null) {
+                class1 = resolvedTypes.get(returnType1.typeVariableSignature().identifier().getText());
+            } else if(returnType1.classTypeSignature() != null) {
+                class1 = returnType1.classTypeSignature().getText();
+                if(class1.contains("<")) {
+                    class1 = class1.substring(0, class1.indexOf('<')) + ";";
+                }
+            }
+            if(returnType2.typeVariableSignature() != null) {
+                class2 = resolvedTypes.get(returnType2.typeVariableSignature().identifier().getText());
+            } else if(returnType2.classTypeSignature() != null) {
+                class2 = returnType2.classTypeSignature().getText();
+                if(class2.contains("<")) {
+                    class2 = class2.substring(0, class2.indexOf('<')) + ";";
+                }
+            }
+            return class1.equals(class2);
+        }
+        return false;
+    }
+
+    private boolean isSameType(Map<String, String> resolvedTypes, SignatureParser.JavaTypeSignatureContext returnType1,
+                               SignatureParser.JavaTypeSignatureContext returnType2) {
+        if(returnType1.getText().equals(returnType2.getText())) {
+            return true;
+        }
+
+        if(returnType1.BaseType() != null && returnType2.BaseType() != null) {
+            return returnType1.BaseType().getText().equals(returnType2.BaseType().getText());
+        }
+        if(returnType1.referenceTypeSignature() != null && returnType2.referenceTypeSignature() != null) {
+            return isSameType(resolvedTypes, returnType1.referenceTypeSignature(), returnType2.referenceTypeSignature());
+        }
+        return false;
     }
 }
