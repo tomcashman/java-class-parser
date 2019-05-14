@@ -537,7 +537,7 @@ public class MethodInfo implements Member, TypeVariableResolver {
         }
         if(returnType1.packageSpecifier() != null && returnType2.packageSpecifier() != null) {
             SignatureParser.PackageSpecifierContext specifierContext1 = returnType1.packageSpecifier();
-            SignatureParser.PackageSpecifierContext specifierContext2 = returnType1.packageSpecifier();
+            SignatureParser.PackageSpecifierContext specifierContext2 = returnType2.packageSpecifier();
 
             while(true) {
                 if(specifierContext1 == null && specifierContext2 == null) {
@@ -554,7 +554,7 @@ public class MethodInfo implements Member, TypeVariableResolver {
                 }
                 specifierContext1 = specifierContext1.packageSpecifier() != null ?
                         specifierContext1.packageSpecifier(0) : null;
-                specifierContext2 = specifierContext1.packageSpecifier() != null ?
+                specifierContext2 = specifierContext2.packageSpecifier() != null ?
                         specifierContext2.packageSpecifier(0) : null;
             }
         }
@@ -585,7 +585,8 @@ public class MethodInfo implements Member, TypeVariableResolver {
         if(returnType1.typeVariableSignature() != null || returnType2.typeVariableSignature() != null) {
             String class1 = "";
             String class2 = "";
-            if(returnType1.typeVariableSignature() != null) {
+            if(returnType1.typeVariableSignature() != null &&
+					resolvedTypes.containsKey(returnType1.typeVariableSignature().identifier().getText())) {
                 class1 = resolvedTypes.get(returnType1.typeVariableSignature().identifier().getText());
             } else if(returnType1.classTypeSignature() != null) {
                 class1 = returnType1.classTypeSignature().getText();
@@ -593,7 +594,8 @@ public class MethodInfo implements Member, TypeVariableResolver {
                     class1 = class1.substring(0, class1.indexOf('<')) + ";";
                 }
             }
-            if(returnType2.typeVariableSignature() != null) {
+            if(returnType2.typeVariableSignature() != null &&
+					resolvedTypes.containsKey(returnType2.typeVariableSignature().identifier().getText())) {
                 class2 = resolvedTypes.get(returnType2.typeVariableSignature().identifier().getText());
             } else if(returnType2.classTypeSignature() != null) {
                 class2 = returnType2.classTypeSignature().getText();
