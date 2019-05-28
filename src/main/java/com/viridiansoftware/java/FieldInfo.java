@@ -18,6 +18,8 @@ package com.viridiansoftware.java;
 import com.viridiansoftware.java.attributes.AttributeInfo;
 import com.viridiansoftware.java.attributes.Attributes;
 import com.viridiansoftware.java.constants.ConstantPool;
+import com.viridiansoftware.java.descriptor.FieldDescriptor;
+import com.viridiansoftware.java.descriptor.MethodDescriptor;
 import com.viridiansoftware.java.signature.FieldSignature;
 import com.viridiansoftware.java.utils.ClassUtils;
 
@@ -41,6 +43,7 @@ public class FieldInfo {
 
     private String signature;
     private FieldSignature fieldSignature;
+    private FieldDescriptor fieldDescriptor;
 
     /**
      * Read a single FieldInfo.
@@ -144,10 +147,15 @@ public class FieldInfo {
         if( info != null ) {
             int idx = info.getDataInputStream().readShort();
             signature = (String)constantPool.get( idx );
-        } else {
-            signature = description;
         }
         return signature;
+    }
+
+    public FieldDescriptor getFieldDescriptor() {
+        if(fieldDescriptor == null) {
+            fieldDescriptor = new FieldDescriptor(getType());
+        }
+        return fieldDescriptor;
     }
 
     /**
@@ -162,37 +170,5 @@ public class FieldInfo {
             fieldSignature = new FieldSignature(getSignature());
         }
         return fieldSignature;
-    }
-
-    public boolean isArray() {
-        return ClassUtils.isArray(description);
-    }
-
-    public int getArrayDimensions() {
-        return ClassUtils.getArrayDimensions(description);
-    }
-
-    public boolean isPrimitive() {
-        return ClassUtils.isPrimitive(description);
-    }
-
-    public boolean isObject() {
-        return ClassUtils.isObject(description);
-    }
-
-    public boolean isArrayOfPrimitives() {
-        return ClassUtils.isArrayOfPrimitives(description);
-    }
-
-    public boolean isArrayOfObjects() {
-        return ClassUtils.isArrayOfObjects(description);
-    }
-
-    public PrimitiveType getPrimitiveType() {
-        return ClassUtils.getPrimitiveType(description);
-    }
-
-    public String getReferenceClass() {
-        return ClassUtils.getReferenceClass(description);
     }
 }
