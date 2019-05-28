@@ -167,7 +167,10 @@ public class FieldInfo {
 
     public FieldSignature getFieldSignature() throws IOException {
         if(fieldSignature == null) {
-            fieldSignature = new FieldSignature(getSignature());
+            if(getSignature() != null)
+            {
+                fieldSignature = new FieldSignature(getSignature());
+            }
         }
         return fieldSignature;
     }
