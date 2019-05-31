@@ -336,10 +336,51 @@ public class ClassFile implements TypeVariableResolver {
     }
 
     /**
+     * Returns if the field is package visibility
+     * @return True if package visibility
+     */
+    public boolean isDefaultScope() {
+        if(isPrivate()) {
+            return false;
+        }
+        if(isPublic()) {
+            return false;
+        }
+        if(isProtected()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Returns if the class is public visibility
+     * @return True if public visibility
+     */
+    public boolean isPublic() {
+        return (accessFlags & ClassAccessFlag.PUBLIC.getMask()) > 0;
+    }
+
+    /**
+     * Returns if the class is protected visibility
+     * @return True if protected visibility
+     */
+    public boolean isProtected() {
+        return (accessFlags & ClassAccessFlag.PROTECTED.getMask()) > 0;
+    }
+
+    /**
+     * Returns if the class is private visibility
+     * @return True if private visibility
+     */
+    public boolean isPrivate() {
+        return (accessFlags & ClassAccessFlag.PRIVATE.getMask()) > 0;
+    }
+
+    /**
      * Get the type of class.
      */
     public Type getType() {
-        if( (accessFlags & 0x0200) > 0 ) {
+        if( (accessFlags & 0x0200) == 0x0200) {
             return Type.Interface;
         }
         if( superClass != null && superClass.getName() != null &&

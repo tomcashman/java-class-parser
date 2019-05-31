@@ -110,7 +110,24 @@ public class MethodInfo implements Member, TypeVariableResolver {
      * @see #getAccessFlags()
      */
     public boolean isStatic() {
-        return (accessFlags & MethodAccessFlag.STATIC.getMask()) > 0;
+        return (accessFlags & MethodAccessFlag.STATIC.getMask()) == MethodAccessFlag.STATIC.getMask();
+    }
+
+    /**
+     * Returns if the method is package visibility
+     * @return True if package visibility
+     */
+    public boolean isDefaultScope() {
+        if(isPrivate()) {
+            return false;
+        }
+        if(isPublic()) {
+            return false;
+        }
+        if(isProtected()) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -118,7 +135,7 @@ public class MethodInfo implements Member, TypeVariableResolver {
      * @return True if public visibility
      */
     public boolean isPublic() {
-        return (accessFlags & MethodAccessFlag.PUBLIC.getMask()) > 0;
+        return (accessFlags & MethodAccessFlag.PUBLIC.getMask()) == MethodAccessFlag.PUBLIC.getMask();
     }
 
     /**
@@ -126,7 +143,7 @@ public class MethodInfo implements Member, TypeVariableResolver {
      * @return True if protected visibility
      */
     public boolean isProtected() {
-        return (accessFlags & MethodAccessFlag.PROTECTED.getMask()) > 0;
+        return (accessFlags & MethodAccessFlag.PROTECTED.getMask()) == MethodAccessFlag.PROTECTED.getMask();
     }
 
     /**
@@ -134,7 +151,7 @@ public class MethodInfo implements Member, TypeVariableResolver {
      * @return True if private visibility
      */
     public boolean isPrivate() {
-        return (accessFlags & MethodAccessFlag.PRIVATE.getMask()) > 0;
+        return (accessFlags & MethodAccessFlag.PRIVATE.getMask()) == MethodAccessFlag.PRIVATE.getMask();
     }
 
     /**
@@ -142,7 +159,7 @@ public class MethodInfo implements Member, TypeVariableResolver {
      * @return True if the method is a native method
      */
     public boolean isNative() {
-        return (accessFlags & MethodAccessFlag.NATIVE.getMask()) > 0;
+        return (accessFlags & MethodAccessFlag.NATIVE.getMask()) == MethodAccessFlag.NATIVE.getMask();
     }
 
     /**
@@ -150,7 +167,7 @@ public class MethodInfo implements Member, TypeVariableResolver {
      * @return True if the method is an abstract method
      */
     public boolean isAbstract() {
-        return (accessFlags & MethodAccessFlag.ABSTRACT.getMask()) > 0;
+        return (accessFlags & MethodAccessFlag.ABSTRACT.getMask()) == MethodAccessFlag.ABSTRACT.getMask();
     }
 
     /**
@@ -158,7 +175,7 @@ public class MethodInfo implements Member, TypeVariableResolver {
      * @return True if the method is a final method
      */
     public boolean isFinal() {
-        return (accessFlags & MethodAccessFlag.FINAL.getMask()) > 0;
+        return (accessFlags & MethodAccessFlag.FINAL.getMask()) == MethodAccessFlag.FINAL.getMask();
     }
 
     /**
@@ -166,7 +183,7 @@ public class MethodInfo implements Member, TypeVariableResolver {
      * @return True if the method is a synchronized method
      */
     public boolean isSynchronized() {
-        return (accessFlags & MethodAccessFlag.SYNCHRONIZED.getMask()) > 0;
+        return (accessFlags & MethodAccessFlag.SYNCHRONIZED.getMask()) == MethodAccessFlag.SYNCHRONIZED.getMask();
     }
 
     /**
@@ -174,7 +191,7 @@ public class MethodInfo implements Member, TypeVariableResolver {
      * @return True if the method is a synthetic method
      */
     public boolean isSynthetic() {
-        return (accessFlags & MethodAccessFlag.SYNTHETIC.getMask()) > 0;
+        return (accessFlags & MethodAccessFlag.SYNTHETIC.getMask()) == MethodAccessFlag.SYNTHETIC.getMask();
     }
 
     /**

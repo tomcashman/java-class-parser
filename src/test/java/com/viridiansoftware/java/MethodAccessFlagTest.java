@@ -25,4 +25,15 @@ public class MethodAccessFlagTest {
 		Assert.assertEquals(MethodAccessFlag.ABSTRACT.getMask(), 0x0401 & MethodAccessFlag.ABSTRACT.getMask());
 		Assert.assertEquals(MethodAccessFlag.PUBLIC.getMask(), 0x0401 & MethodAccessFlag.PUBLIC.getMask());
 	}
+
+	@Test
+	public void testDefaultScope() {
+		Assert.assertTrue( (0x0400 & MethodAccessFlag.PUBLIC.getMask()) != MethodAccessFlag.PUBLIC.getMask());
+		Assert.assertTrue( (0x0400 & MethodAccessFlag.PRIVATE.getMask()) != MethodAccessFlag.PRIVATE.getMask());
+		Assert.assertTrue( (0x0400 & MethodAccessFlag.PROTECTED.getMask()) != MethodAccessFlag.PROTECTED.getMask());
+
+		Assert.assertTrue( (0x0401 & MethodAccessFlag.PUBLIC.getMask()) == MethodAccessFlag.PUBLIC.getMask());
+		Assert.assertTrue( (0x0401 & MethodAccessFlag.PRIVATE.getMask()) != MethodAccessFlag.PRIVATE.getMask());
+		Assert.assertTrue( (0x0401 & MethodAccessFlag.PROTECTED.getMask()) != MethodAccessFlag.PROTECTED.getMask());
+	}
 }

@@ -84,6 +84,23 @@ public class FieldInfo {
     }
 
     /**
+     * Returns if the field is package visibility
+     * @return True if package visibility
+     */
+    public boolean isDefaultScope() {
+        if(isPrivate()) {
+            return false;
+        }
+        if(isPublic()) {
+            return false;
+        }
+        if(isProtected()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Returns if the field is public visibility
      * @return True if public visibility
      */
