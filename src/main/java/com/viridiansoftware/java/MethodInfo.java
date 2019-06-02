@@ -368,7 +368,28 @@ public class MethodInfo implements Member, TypeVariableResolver {
     }
 
     public boolean isImplementationOf(MethodInfo methodInfo) throws IOException {
-        return isImplementationOf(methodInfo, false);
+        return isImplementationOf(methodInfo, true,false);
+    }
+
+    public boolean isImplementationOf(MethodInfo methodInfo, boolean allowErasedMatch, boolean allowSyntheicImplementations) throws IOException {
+        if(!getName().equals(methodInfo.getName())) {
+            return false;
+        }
+        if(!allowSyntheicImplementations && isSynthetic()) {
+            return false;
+        }
+        if((methodInfo.getSignature() != null && allowErasedMatch) || methodInfo.getSignature() == null)
+        {
+            if(description != null && methodInfo.getType() != null) {
+                if(description.equals(methodInfo.getType())) {
+                    return true;
+                }
+            }
+        }
+        if(methodInfo.getSignature() != null) {
+            return isImplementationOf(methodInfo.getDeclaringClassFile(), methodInfo.getMethodSignature());
+        }
+        return false;
     }
 
     public boolean isImplementationOf(MethodInfo methodInfo, boolean allowSyntheicImplementations) throws IOException {
@@ -463,7 +484,7 @@ public class MethodInfo implements Member, TypeVariableResolver {
             }
         }
 
-        for(int i = 0; i < methodSignature.getTotalTypeParameters(); i++) {
+        for(int i = 0; i < methodSignature.getTotalMethodArguments(); i++) {
             if(!isSameType(resolvedTypes, methodSignature.getMethodArgument(i), getMethodArgumentType(i))) {
                 return false;
             }
