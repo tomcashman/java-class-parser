@@ -195,6 +195,14 @@ public class MethodInfo implements Member, TypeVariableResolver {
     }
 
     /**
+     * Returns if the method is a bridge method
+     * @return True if the method is a bridge method
+     */
+    public boolean isBridge() {
+        return (accessFlags & MethodAccessFlag.BRIDGE.getMask()) == MethodAccessFlag.BRIDGE.getMask();
+    }
+
+    /**
      * @return the name
      */
     @Override
