@@ -357,7 +357,7 @@ public class ClassFile implements TypeVariableResolver {
      * @return True if public visibility
      */
     public boolean isPublic() {
-        return (accessFlags & ClassAccessFlag.PUBLIC.getMask()) > 0;
+        return (accessFlags & ClassAccessFlag.PUBLIC.getMask()) == ClassAccessFlag.PUBLIC.getMask();
     }
 
     /**
@@ -365,7 +365,7 @@ public class ClassFile implements TypeVariableResolver {
      * @return True if protected visibility
      */
     public boolean isProtected() {
-        return (accessFlags & ClassAccessFlag.PROTECTED.getMask()) > 0;
+        return (accessFlags & ClassAccessFlag.PROTECTED.getMask()) == ClassAccessFlag.PROTECTED.getMask();
     }
 
     /**
@@ -373,7 +373,47 @@ public class ClassFile implements TypeVariableResolver {
      * @return True if private visibility
      */
     public boolean isPrivate() {
-        return (accessFlags & ClassAccessFlag.PRIVATE.getMask()) > 0;
+        return (accessFlags & ClassAccessFlag.PRIVATE.getMask()) == ClassAccessFlag.PRIVATE.getMask();
+    }
+
+    /**
+     * Returns if the class is an interface
+     * @return True if an interface
+     */
+    public boolean isInterface() {
+        return (accessFlags & ClassAccessFlag.INTERFACE.getMask()) == ClassAccessFlag.INTERFACE.getMask();
+    }
+
+    /**
+     * Returns if the class is abstract
+     * @return True if abstract
+     */
+    public boolean isAbstract() {
+        return (accessFlags & ClassAccessFlag.ABSTRACT.getMask()) == ClassAccessFlag.ABSTRACT.getMask();
+    }
+
+    /**
+     * Returns if the class is an enum
+     * @return True if an enum
+     */
+    public boolean isEnum() {
+        return (accessFlags & ClassAccessFlag.ENUM.getMask()) == ClassAccessFlag.ENUM.getMask();
+    }
+
+    /**
+     * Returns if the class is static
+     * @return True if static
+     */
+    public boolean isStatic() {
+        return (accessFlags & ClassAccessFlag.STATIC.getMask()) == ClassAccessFlag.STATIC.getMask();
+    }
+
+    /**
+     * Returns if the class is final
+     * @return True if final
+     */
+    public boolean isFinal() {
+        return (accessFlags & ClassAccessFlag.FINAL.getMask()) == ClassAccessFlag.FINAL.getMask();
     }
 
     /**
