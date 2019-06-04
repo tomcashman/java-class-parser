@@ -52,6 +52,13 @@ public class Attributes {
         return null;
     }
 
+    public void printAttributeNames()
+    {
+        for( AttributeInfo attr : attributes ) {
+            System.out.println(attr.getName());
+        }
+    }
+
     /**
      * Get value of SourceFile if available.
      * @return the source file name or null.
