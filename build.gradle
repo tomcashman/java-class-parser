@@ -12,7 +12,7 @@ buildscript {
 }
 
 if(project.hasProperty('ossrhUser') && project.hasProperty("release")) {
-	apply plugin: "files.codearte.nexus-staging"
+	apply plugin: "io.codearte.nexus-staging"
 
 	nexusStaging {
 		packageGroup = 'com.viridiansoftware'
