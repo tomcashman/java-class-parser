@@ -58,7 +58,16 @@ public class Code {
         attributes = new Attributes( input, constantPool );
     }
 
-    public Code() {}
+    public Code() {
+        constantPool = null;
+        maxStack = 0;
+        maxLocals = 0;
+        codeData = new byte[0];
+        exceptionTable = new TryCatchFinally[0];
+        attributes = null;
+        lineNumberTable = null;
+        localVariableTable = null;
+    }
 
     @NonNull
     public ConstantPool getConstantPool(){
