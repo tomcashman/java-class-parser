@@ -58,6 +58,8 @@ public class Code {
         attributes = new Attributes( input, constantPool );
     }
 
+    public Code() {}
+
     @NonNull
     public ConstantPool getConstantPool(){
         return constantPool;
