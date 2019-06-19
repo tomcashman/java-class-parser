@@ -204,6 +204,8 @@ public class ConstantPool {
 		} while (repeat);
 	}
 
+	public ConstantPool() {}
+
 	public Object get(int index) {
 		return constantPool[index];
 	}
