@@ -204,10 +204,16 @@ public class ConstantPool {
 		} while (repeat);
 	}
 
-	public ConstantPool() {}
+	public ConstantPool(int size) {
+		constantPool = new Object[size];
+	}
 
 	public Object get(int index) {
 		return constantPool[index];
+	}
+
+	public void set(int index, Object obj) {
+		constantPool[index] = obj;
 	}
 
 	public int length() {
