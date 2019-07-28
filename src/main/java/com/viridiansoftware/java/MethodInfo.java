@@ -231,7 +231,7 @@ public class MethodInfo implements Member, TypeVariableResolver {
         }
         AttributeInfo data = attributes.get( "Code" );
         if( data != null ) {
-            code = new Code( data.getDataInputStream(), constantPool );
+            code = new Code( data.getDataInputStream(), constantPool, classFile.getBootstrapMethods());
         }
         return code;
     }

@@ -55,6 +55,7 @@ public class ClassFile implements TypeVariableResolver {
     private NestMembers           nestMembers;
     private InnerClasses          innerClasses;
     private EnclosingMethod       enclosingMethod;
+    private BootstrapMethods      bootstrapMethods;
 
     /**
      * Load a class file and create a model of the class.
@@ -133,6 +134,10 @@ public class ClassFile implements TypeVariableResolver {
         if(enclosingMethodInfo != null) {
             enclosingMethod = new EnclosingMethod(enclosingMethodInfo.getDataInputStream(), constantPool);
         }
+        AttributeInfo bootstrapMethodsInfo = attributes.get("BootstrapMethods");
+        if(bootstrapMethodsInfo != null) {
+        	bootstrapMethods = new BootstrapMethods(bootstrapMethodsInfo.getDataInputStream(), constantPool);
+        }
     }
 
     /**
@@ -166,7 +171,11 @@ public class ClassFile implements TypeVariableResolver {
         return methods;
     }
 
-    public List<MethodInfo> getClassInitialisationMethods() {
+	public BootstrapMethods getBootstrapMethods() {
+		return bootstrapMethods;
+	}
+
+	public List<MethodInfo> getClassInitialisationMethods() {
         final List<MethodInfo> results = new ArrayList<MethodInfo>(2);
         for( MethodInfo method : methods ) {
             if( method.getName().equals("<clinit>")) {

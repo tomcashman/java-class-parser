@@ -27,6 +27,7 @@ import java.io.IOException;
 public class Code {
 
     private final ConstantPool constantPool;
+    private final BootstrapMethods bootstrapMethods;
     private final int maxStack;
     private final int maxLocals;
     private final byte[] codeData;
@@ -44,8 +45,9 @@ public class Code {
      * @param constantPool
      * @throws IOException
      */
-    public Code( DataInputStream input, @NonNull ConstantPool constantPool ) throws IOException {
+    public Code( DataInputStream input, @NonNull ConstantPool constantPool, @NonNull BootstrapMethods bootstrapMethods) throws IOException {
         this.constantPool = constantPool;
+        this.bootstrapMethods = bootstrapMethods;
         maxStack = input.readUnsignedShort(); //max_stack
         maxLocals = input.readUnsignedShort(); //max_locals;
         codeData = new byte[input.readInt()];
@@ -60,6 +62,7 @@ public class Code {
 
     public Code() {
         constantPool = null;
+        bootstrapMethods = null;
         maxStack = 0;
         maxLocals = 0;
         codeData = new byte[0];
@@ -79,7 +82,12 @@ public class Code {
         return exceptionTable;
     }
 
-    public LineNumberTable getLineNumberTable() throws IOException {
+	@NonNull
+	public BootstrapMethods getBootstrapMethods() {
+		return bootstrapMethods;
+	}
+
+	public LineNumberTable getLineNumberTable() throws IOException {
         if( lineNumberTable != null ){
             return lineNumberTable;
         }

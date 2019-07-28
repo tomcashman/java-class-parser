@@ -15,12 +15,86 @@
  ******************************************************************************/
 package com.viridiansoftware.java.constants;
 
+import java.sql.Ref;
+
 public class ConstantMethodHandle {
-	private final int referenceKind;
+	private final ReferenceKind referenceKind;
 	private final ConstantRef reference;
 
 	public ConstantMethodHandle(int referenceKind, ConstantRef reference) {
-		this.referenceKind = referenceKind;
 		this.reference = reference;
+
+		for(ReferenceKind refKind : ReferenceKind.values()) {
+			if(refKind.kind == referenceKind) {
+				this.referenceKind = refKind;
+				return;
+			}
+		}
+		this.referenceKind = ReferenceKind.GET_FIELD;
+	}
+
+	/**
+	 * Returns the field or method name depending on the reference kind
+	 * @return
+	 */
+	public String getName() {
+		switch(referenceKind) {
+		default:
+		case GET_FIELD:
+		case GET_STATIC:
+		case PUT_FIELD:
+		case PUT_STATIC: {
+			ConstantFieldRef fieldRef = (ConstantFieldRef) reference;
+			return fieldRef.getName();
+		}
+		case INVOKE_VIRTUAL: {
+			ConstantMethodRef methodRef = (ConstantMethodRef) reference;
+			return methodRef.getName();
+		}
+		case INVOKE_STATIC:
+		case INVOKE_SPECIAL: {
+			if(reference instanceof ConstantInterfaceMethodRef) {
+				ConstantInterfaceMethodRef methodRef = (ConstantInterfaceMethodRef) reference;
+				return methodRef.getName();
+			} else {
+				ConstantMethodRef methodRef = (ConstantMethodRef) reference;
+				return methodRef.getName();
+			}
+		}
+		case NEW_INVOKE_SPECIAL: {
+			ConstantMethodRef methodRef = (ConstantMethodRef) reference;
+			return methodRef.getName();
+		}
+		case INVOKE_INTERFACE: {
+			ConstantInterfaceMethodRef methodRef = (ConstantInterfaceMethodRef) reference;
+			return methodRef.getName();
+		}
+		}
+	}
+
+	public ReferenceKind getReferenceKind() {
+		return referenceKind;
+	}
+
+	public int getKind() {
+		return referenceKind.kind;
+	}
+
+	public enum ReferenceKind {
+		GET_FIELD(1),
+		GET_STATIC(2),
+		PUT_FIELD(3),
+		PUT_STATIC(4),
+		INVOKE_VIRTUAL(5),
+		INVOKE_STATIC(6),
+		INVOKE_SPECIAL(7),
+		NEW_INVOKE_SPECIAL(8),
+		INVOKE_INTERFACE(9);
+
+		public int kind;
+
+		ReferenceKind(int kind) {
+			this.kind = kind;
+		}
 	}
 }
