@@ -45,7 +45,7 @@ public class Code {
      * @param constantPool
      * @throws IOException
      */
-    public Code( DataInputStream input, @NonNull ConstantPool constantPool, @NonNull BootstrapMethods bootstrapMethods) throws IOException {
+    public Code( DataInputStream input, @NonNull ConstantPool constantPool, BootstrapMethods bootstrapMethods) throws IOException {
         this.constantPool = constantPool;
         this.bootstrapMethods = bootstrapMethods;
         maxStack = input.readUnsignedShort(); //max_stack
@@ -82,7 +82,6 @@ public class Code {
         return exceptionTable;
     }
 
-	@NonNull
 	public BootstrapMethods getBootstrapMethods() {
 		return bootstrapMethods;
 	}
