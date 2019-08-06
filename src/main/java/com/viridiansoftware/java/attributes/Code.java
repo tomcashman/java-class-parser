@@ -131,7 +131,7 @@ public class Code {
         }
     }
 
-    /**
+	/**
      * Get the stream of Java Byte code instruction of this method.  
      * 
      * @return the stream
@@ -175,4 +175,12 @@ public class Code {
     public byte[] getCodeData() {
         return codeData;
     }
+
+	public int getMaxStack() {
+		return maxStack;
+	}
+
+	public int getMaxLocals() {
+		return maxLocals;
+	}
 }
