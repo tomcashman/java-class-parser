@@ -99,4 +99,12 @@ public class LocalVariable {
     public void setDeclared() {
         declared = true;
     }
+
+    public int getStartPointCode() {
+        return start_pc;
+    }
+
+    public int getLength() {
+        return length;
+    }
 }
