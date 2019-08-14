@@ -20,12 +20,13 @@ import lombok.NonNull;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LocalVariableTable {
-
+    private final int maxLocals;
     private final ConstantPool constantPool;
-    private LocalVariable[] tablePosition;
-    private LocalVariable[] table;
+    private final List<LocalVariable> table;
     private int count;
 
     /**
@@ -37,8 +38,8 @@ public class LocalVariableTable {
      *            Reference to the current ConstantPool
      */
     public LocalVariableTable( int maxLocals, ConstantPool constantPool ) {
-        table = new LocalVariable[maxLocals];
-        tablePosition = new LocalVariable[maxLocals];
+        this.maxLocals = maxLocals;
+        table = new ArrayList(maxLocals + 1);
         this.constantPool = constantPool;
     }
 
@@ -48,59 +49,16 @@ public class LocalVariableTable {
      *
      * @param input
      *            the stream of the class
-     * @param withPositions
-     *            a hack if we find a better solution to map the positions LocalVariableTypeTable
      * @throws IOException
      *             if any I/O error occurs.
      */
-    void read( DataInputStream input, boolean withPositions ) throws IOException {
+    void read( DataInputStream input) throws IOException {
         count = input.readUnsignedShort();
-        boolean[] wasSet = new boolean[table.length];
         for( int i = 0; i < count; i++ ) {
             LocalVariable var = new LocalVariable( input, i, constantPool );
             int idx = var.getIndex();
-            if( !wasSet[idx] ) { // does not use index of reused variable
-                table[idx] = var;
-                wasSet[idx] = true;
-            }
+            table.add(var);
         }
-
-        if( withPositions ) {
-            for( int i = 0, t = 0; i < table.length; i++ ) {
-                LocalVariable var = table[i];
-                if( var != null ) {
-                    tablePosition[t++] = var;
-                }
-            }
-        }
-    }
-
-    /**
-     * Get the count of variables.
-     * @return the count
-     */
-    public int getPositionSize() {
-        return tablePosition.length;
-    }
-
-    /**
-     * Get the count of storage places a 4 bytes for local variables. Double and long variables need 2 of this places.
-     * 
-     * @return the local stack size
-     */
-    public int getSize() {
-        return table.length;
-    }
-
-    /**
-     * Get the LocalVariable with it position. The position is continue also with double and long variables. Or if a variable is reused from a other block.
-     *
-     * @param pos
-     *            the position
-     */
-    @NonNull
-    public LocalVariable getPosition( int pos ) {
-        return tablePosition[pos];
     }
 
     /**
@@ -111,8 +69,16 @@ public class LocalVariableTable {
      * @return the LocalVariable
      */
     @NonNull
-    public LocalVariable get( int idx ) {
-        return table[idx];
+    public LocalVariable getByEntryIndex( int idx ) {
+        return table.get(idx);
+    }
+
+    public int getTotalEntires() {
+        return table.size();
+    }
+
+    public int getMaxLocals() {
+        return maxLocals;
     }
 
     /**
@@ -126,9 +92,9 @@ public class LocalVariableTable {
         if(name == null) {
             return null;
         }
-        for( int i=0; i<table.length; i++ ){
-            if( name.equals( table[i].getName() )) {
-                return table[i];
+        for( int i=0; i< table.size(); i++ ){
+            if( name.equals( table.get(i).getName() )) {
+                return table.get(i);
             }
         }
         return null;
