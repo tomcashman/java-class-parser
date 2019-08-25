@@ -315,13 +315,13 @@ public class MethodInfo implements Member, TypeVariableResolver {
     }
 
     public int getTotalMethodArguments() throws IOException {
-        if(getMethodSignature() != null)
-        {
-            return getMethodSignature().getTotalMethodArguments();
-        }
         if(getMethodDescriptor() != null)
         {
             return getMethodDescriptor().getTotalMethodParameters();
+        }
+        if(getMethodSignature() != null)
+        {
+            return getMethodSignature().getTotalMethodArguments();
         }
         return getMethodParameters().getParameterNames().length;
     }
