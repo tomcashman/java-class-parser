@@ -229,4 +229,26 @@ public class ConstantPool {
 		}
 		return result;
 	}
+
+	public List<String> getConstantFieldDescriptors() {
+		final List<String> result = new ArrayList<String>();
+		for (int i = 0; i < constantPool.length; i++) {
+			if (constantPool[i] instanceof ConstantFieldRef) {
+				result.add(((ConstantFieldRef) constantPool[i]).getType());
+			}
+		}
+		return result;
+	}
+
+	public List<String> getConstantMethodDescriptors() {
+		final List<String> result = new ArrayList<String>();
+		for (int i = 0; i < constantPool.length; i++) {
+			if (constantPool[i] instanceof ConstantMethodRef) {
+				result.add(((ConstantMethodRef) constantPool[i]).getType());
+			} else if (constantPool[i] instanceof ConstantInterfaceMethodRef) {
+				result.add(((ConstantInterfaceMethodRef) constantPool[i]).getType());
+			}
+		}
+		return result;
+	}
 }
