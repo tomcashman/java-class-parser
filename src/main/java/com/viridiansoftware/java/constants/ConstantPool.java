@@ -251,4 +251,16 @@ public class ConstantPool {
 		}
 		return result;
 	}
+
+	public List<ConstantRef> getConstantMethodRefs() {
+		final List<ConstantRef> result = new ArrayList<ConstantRef>();
+		for (int i = 0; i < constantPool.length; i++) {
+			if (constantPool[i] instanceof ConstantMethodRef) {
+				result.add(((ConstantMethodRef) constantPool[i]));
+			} else if (constantPool[i] instanceof ConstantInterfaceMethodRef) {
+				result.add(((ConstantInterfaceMethodRef) constantPool[i]));
+			}
+		}
+		return result;
+	}
 }
