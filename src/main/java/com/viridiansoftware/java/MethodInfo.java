@@ -203,6 +203,14 @@ public class MethodInfo implements Member, TypeVariableResolver {
     }
 
     /**
+     * Returns if the method has a variable number of arguments
+     * @return True if VARARGS flag is set
+     */
+    public boolean isVarArgs() {
+        return (accessFlags & MethodAccessFlag.VARARGS.getMask()) == MethodAccessFlag.VARARGS.getMask();
+    }
+
+    /**
      * @return the name
      */
     @Override
