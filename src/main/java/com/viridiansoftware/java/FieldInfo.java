@@ -19,9 +19,7 @@ import com.viridiansoftware.java.attributes.AttributeInfo;
 import com.viridiansoftware.java.attributes.Attributes;
 import com.viridiansoftware.java.constants.ConstantPool;
 import com.viridiansoftware.java.descriptor.FieldDescriptor;
-import com.viridiansoftware.java.descriptor.MethodDescriptor;
 import com.viridiansoftware.java.signature.FieldSignature;
-import com.viridiansoftware.java.utils.ClassUtils;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -44,6 +42,7 @@ public class FieldInfo {
     private String signature;
     private FieldSignature fieldSignature;
     private FieldDescriptor fieldDescriptor;
+    private Object constantValue;
 
     /**
      * Read a single FieldInfo.
@@ -173,6 +172,18 @@ public class FieldInfo {
             fieldDescriptor = new FieldDescriptor(getType());
         }
         return fieldDescriptor;
+    }
+
+    public Object getConstantValue() throws IOException {
+        if(constantValue != null) {
+            return constantValue;
+        }
+        AttributeInfo info = getAttributes().get( "ConstantValue" );
+        if( info != null ) {
+            int idx = info.getDataInputStream().readShort();
+            constantValue = constantPool.get( idx );
+        }
+        return constantValue;
     }
 
     /**
