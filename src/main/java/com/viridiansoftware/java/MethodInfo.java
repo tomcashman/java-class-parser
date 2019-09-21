@@ -337,9 +337,7 @@ public class MethodInfo implements Member, TypeVariableResolver {
     public String getMethodArgumentName(int i) throws IOException {
         try {
             return getMethodParameters().getParameterNames()[i];
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) {}
         return "arg" + i;
     }
 
