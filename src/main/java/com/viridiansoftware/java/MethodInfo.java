@@ -335,7 +335,12 @@ public class MethodInfo implements Member, TypeVariableResolver {
     }
 
     public String getMethodArgumentName(int i) throws IOException {
-        return getMethodParameters().getParameterNames()[i];
+        try {
+            return getMethodParameters().getParameterNames()[i];
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "arg" + i;
     }
 
     public SignatureParser.JavaTypeSignatureContext getMethodArgumentType(int i) throws IOException {
