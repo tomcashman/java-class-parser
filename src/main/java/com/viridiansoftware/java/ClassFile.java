@@ -24,6 +24,7 @@ import com.viridiansoftware.java.descriptor.antlr.DescriptorParser;
 import com.viridiansoftware.java.signature.ClassSignature;
 import com.viridiansoftware.java.signature.antlr.SignatureParser;
 import com.viridiansoftware.java.utils.ClassUtils;
+import org.w3c.dom.Attr;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -56,6 +57,7 @@ public class ClassFile implements TypeVariableResolver {
     private InnerClasses          innerClasses;
     private EnclosingMethod       enclosingMethod;
     private BootstrapMethods      bootstrapMethods;
+    private RuntimeVisibleAnnotations runtimeVisibleAnnotations;
 
     /**
      * Load a class file and create a model of the class.
@@ -137,6 +139,10 @@ public class ClassFile implements TypeVariableResolver {
         AttributeInfo bootstrapMethodsInfo = attributes.get("BootstrapMethods");
         if(bootstrapMethodsInfo != null) {
         	bootstrapMethods = new BootstrapMethods(bootstrapMethodsInfo.getDataInputStream(), constantPool);
+        }
+        AttributeInfo runtimeVisibleAnnotationsInfo = attributes.get("RuntimeVisibleAnnotations");
+        if(runtimeVisibleAnnotationsInfo != null) {
+            runtimeVisibleAnnotations = new RuntimeVisibleAnnotations(constantPool, runtimeVisibleAnnotationsInfo.getDataInputStream());
         }
     }
 
@@ -344,6 +350,10 @@ public class ClassFile implements TypeVariableResolver {
         return enclosingMethod;
     }
 
+    public RuntimeVisibleAnnotations getRuntimeVisibleAnnotations() {
+        return runtimeVisibleAnnotations;
+    }
+
     /**
      * Returns if the field is package visibility
      * @return True if package visibility
@@ -407,6 +417,14 @@ public class ClassFile implements TypeVariableResolver {
      */
     public boolean isEnum() {
         return (accessFlags & ClassAccessFlag.ENUM.getMask()) == ClassAccessFlag.ENUM.getMask();
+    }
+
+    /**
+     * Returns if the class is an annotation
+     * @return True if an annotation
+     */
+    public boolean isAnnotation() {
+        return (accessFlags & ClassAccessFlag.ANNOTATION.getMask()) == ClassAccessFlag.ANNOTATION.getMask();
     }
 
     /**

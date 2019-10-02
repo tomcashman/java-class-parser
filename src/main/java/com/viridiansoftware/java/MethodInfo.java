@@ -15,9 +15,7 @@
  ******************************************************************************/
 package com.viridiansoftware.java;
 
-import com.viridiansoftware.java.attributes.AttributeInfo;
-import com.viridiansoftware.java.attributes.Attributes;
-import com.viridiansoftware.java.attributes.Code;
+import com.viridiansoftware.java.attributes.*;
 import com.viridiansoftware.java.constants.ConstantNameAndType;
 import com.viridiansoftware.java.constants.ConstantPool;
 import com.viridiansoftware.java.descriptor.MethodDescriptor;
@@ -41,7 +39,8 @@ public class MethodInfo implements Member, TypeVariableResolver {
     private Code code;
     private Exceptions         exceptions;
     private ClassFile          classFile;
-    private Map<String,Map<String,Object>> annotations;
+    private RuntimeVisibleAnnotations runtimeVisibleAnnotations;
+    private RuntimeVisibleParameterAnnotations runtimeVisibleParameterAnnotations;
 
     private String signature;
     private MethodParameters methodParameters;
@@ -231,6 +230,26 @@ public class MethodInfo implements Member, TypeVariableResolver {
      */
     public Attributes getAttributes() {
         return attributes;
+    }
+
+    public RuntimeVisibleAnnotations getRuntimeVisibleAnnotations() throws IOException {
+        if(runtimeVisibleAnnotations == null) {
+            AttributeInfo info = getAttributes().get( "RuntimeVisibleAnnotations" );
+            if(info != null) {
+                runtimeVisibleAnnotations = new RuntimeVisibleAnnotations(constantPool, info.getDataInputStream());
+            }
+        }
+        return runtimeVisibleAnnotations;
+    }
+
+    public RuntimeVisibleParameterAnnotations getRuntimeVisibleParameterAnnotations() throws IOException {
+        if(runtimeVisibleParameterAnnotations == null) {
+            AttributeInfo info = getAttributes().get( "RuntimeVisibleParameterAnnotations" );
+            if(info != null) {
+                runtimeVisibleParameterAnnotations = new RuntimeVisibleParameterAnnotations(constantPool, info.getDataInputStream());
+            }
+        }
+        return runtimeVisibleParameterAnnotations;
     }
 
     public Code getCode() throws IOException {
@@ -512,26 +531,7 @@ public class MethodInfo implements Member, TypeVariableResolver {
         return true;
     }
 
-    /**
-     * Get a single annotation or null
-     * 
-     * @param annotation
-     *            the class name of the annotation
-     * @return the value or null if not exists
-     * @throws IOException
-     *             if any I/O error occur
-     */
-    public Map<String, Object> getAnnotation( String annotation ) throws IOException {
-        if( annotations == null ) {
-            AttributeInfo data = attributes.get( "RuntimeInvisibleAnnotations" );
-            if( data != null ) {
-                annotations =  Annotations.read( data.getDataInputStream(), constantPool );
-            } else {
-                annotations = Collections.emptyMap();
-            }
-        }
-        return annotations.get( annotation );
-    }
+
 
     /**
      * Get the constant pool of the the current class.

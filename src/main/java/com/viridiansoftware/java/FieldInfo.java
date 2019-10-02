@@ -17,6 +17,7 @@ package com.viridiansoftware.java;
 
 import com.viridiansoftware.java.attributes.AttributeInfo;
 import com.viridiansoftware.java.attributes.Attributes;
+import com.viridiansoftware.java.attributes.RuntimeVisibleAnnotations;
 import com.viridiansoftware.java.constants.ConstantPool;
 import com.viridiansoftware.java.descriptor.FieldDescriptor;
 import com.viridiansoftware.java.signature.FieldSignature;
@@ -43,6 +44,7 @@ public class FieldInfo {
     private FieldSignature fieldSignature;
     private FieldDescriptor fieldDescriptor;
     private Object constantValue;
+    private RuntimeVisibleAnnotations runtimeVisibleAnnotations;
 
     /**
      * Read a single FieldInfo.
@@ -184,6 +186,16 @@ public class FieldInfo {
             constantValue = constantPool.get( idx );
         }
         return constantValue;
+    }
+
+    public RuntimeVisibleAnnotations getRuntimeVisibleAnnotations() throws IOException {
+        if(runtimeVisibleAnnotations == null) {
+            AttributeInfo info = getAttributes().get( "RuntimeVisibleAnnotations" );
+            if(info != null) {
+                runtimeVisibleAnnotations = new RuntimeVisibleAnnotations(constantPool, info.getDataInputStream());
+            }
+        }
+        return runtimeVisibleAnnotations;
     }
 
     /**
