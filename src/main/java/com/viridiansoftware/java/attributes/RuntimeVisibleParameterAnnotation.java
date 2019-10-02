@@ -32,6 +32,18 @@ public class RuntimeVisibleParameterAnnotation {
 		}
 	}
 
+	public RuntimeVisibleAnnotation getAnnotationByType(String classInfo) {
+		if(!classInfo.startsWith("L")) {
+			classInfo = "L" + classInfo + ";";
+		}
+		for(int i = 0; i < annotations.size(); i++) {
+			if(annotations.get(i).getTypeDescriptor().equalsIgnoreCase(classInfo)) {
+				return annotations.get(i);
+			}
+		}
+		return null;
+	}
+
 	public List<RuntimeVisibleAnnotation> getAnnotations() {
 		return annotations;
 	}
