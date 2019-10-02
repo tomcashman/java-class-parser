@@ -39,6 +39,15 @@ public class RuntimeVisibleAnnotation {
 		return typeDescriptor;
 	}
 
+	public AnnotationElementValuePair getElementValuePair(String name) {
+		for(int i = 0; i < elementValuePairs.size(); i++) {
+			if(elementValuePairs.get(i).getElementName().equalsIgnoreCase(name)) {
+				return elementValuePairs.get(i);
+			}
+		}
+		return null;
+	}
+
 	public List<AnnotationElementValuePair> getElementValuePairs() {
 		return elementValuePairs;
 	}
