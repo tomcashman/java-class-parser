@@ -22,13 +22,13 @@ import java.io.DataInputStream;
 import java.io.IOException;
 
 public class ClassElementValue extends AnnotationElementValue {
-	private final ConstantClass constantClass;
+	private final String constantClass;
 
 	public ClassElementValue(ConstantPool constantPool, DataInputStream input) throws IOException {
-		constantClass = (ConstantClass) constantPool.get(input.readUnsignedShort());
+		constantClass = (String) constantPool.get(input.readUnsignedShort());
 	}
 
 	public String getName() {
-		return constantClass.getName();
+		return constantClass;
 	}
 }
