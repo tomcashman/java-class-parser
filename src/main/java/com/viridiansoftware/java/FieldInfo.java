@@ -134,6 +134,22 @@ public class FieldInfo {
     }
 
     /**
+     * If this field is final or not
+     * @return true, if final
+     */
+    public boolean isFinal() {
+        return (accessFlags & FieldAccessFlag.FINAL.getMask()) > 0;
+    }
+
+    /**
+     * If this field is volatile or not
+     * @return true, if volatile
+     */
+    public boolean isVolatile() {
+        return (accessFlags & FieldAccessFlag.VOLATILE.getMask()) > 0;
+    }
+
+    /**
      * Get the name of the field
      * @return the name
      */
