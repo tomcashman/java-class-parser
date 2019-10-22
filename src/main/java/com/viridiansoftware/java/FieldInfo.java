@@ -150,6 +150,14 @@ public class FieldInfo {
     }
 
     /**
+     * If this field is an enum field or not
+     * @return true, if enum
+     */
+    public boolean isEnum() {
+        return (accessFlags & FieldAccessFlag.ENUM.getMask()) > 0;
+    }
+
+    /**
      * Get the name of the field
      * @return the name
      */
