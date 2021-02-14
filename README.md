@@ -8,7 +8,7 @@ Based on the awesome work done by Volker Berlin in [JWebAssembly](https://github
 __Gradle__
 
 ```
-compile "com.viridiansoftware:java-class-parser:1.0.2"
+compile "com.viridiansoftware:java-class-parser:1.0.3"
 ```
 
 __Maven__
@@ -17,6 +17,6 @@ __Maven__
 <dependency>
     <groupId>com.viridiansoftware</groupId>
     <artifactId>java-class-parser</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 ```
