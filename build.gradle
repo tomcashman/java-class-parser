@@ -47,7 +47,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 group = 'com.viridiansoftware'
-version = "1.0.2"
+version = "1.0.3"
 
 task sourcesJar(type: Jar) {
 	archiveClassifier = 'sources'
