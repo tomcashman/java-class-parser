@@ -41,6 +41,7 @@ public class MethodInfo implements Member, TypeVariableResolver {
     private ClassFile          classFile;
     private RuntimeVisibleAnnotations runtimeVisibleAnnotations;
     private RuntimeVisibleParameterAnnotations runtimeVisibleParameterAnnotations;
+    private AnnotationDefault annotationDefault;
 
     private String signature;
     private MethodParameters methodParameters;
@@ -230,6 +231,16 @@ public class MethodInfo implements Member, TypeVariableResolver {
      */
     public Attributes getAttributes() {
         return attributes;
+    }
+
+    public AnnotationDefault getAnnotationDefault() throws IOException {
+        if(annotationDefault == null) {
+            AttributeInfo info = getAttributes().get("AnnotationDefault");
+            if(info != null) {
+                annotationDefault = new AnnotationDefault(constantPool, info);
+            }
+        }
+        return annotationDefault;
     }
 
     public RuntimeVisibleAnnotations getRuntimeVisibleAnnotations() throws IOException {

@@ -1,3 +1,6 @@
+[1.0.3]
+- Add support for retrieving AnnotationDefault
+
 [1.0.2]
 - Update to descriptor-parser 1.0.2 and signature-parser 1.0.2
 - Improve LocalVariableTable implementation
